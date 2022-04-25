@@ -4,9 +4,23 @@
 .info {
     margin: 50px;
     margin-top: 10px;
-    margin-bottom: 100px;
+    margin-bottom: 20px;
     font-size: 1.1rem;
     color: #EEE;
+    text-align: center;
+}
+
+.viewport{
+    margin: 0px;
+    width: 100vw;
+    height: 100vh;
+    max-width: 100%;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(900px, 1fr));
+    justify-content: center;
 }
 
 .toc{
@@ -18,6 +32,11 @@
     color: var(--card-text-color);
     margin-top: 5px;
     margin-left: 20px;
+    margin-right: 120px;
+    padding-left: 5px;
+    background: rgb(0,12,113);
+    background: linear-gradient(90deg, rgba(0,12,113,0.641650390625) 0%, rgba(255,197,80,0.482275390625) 64%, rgba(32,32,32,0.504150390625) 100%);
+    
 }
 .table-entry{
     color: var(--card-text-color);
