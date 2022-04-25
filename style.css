@@ -13,7 +13,7 @@
 .viewport{
     margin: 0px;
     width: 100vw;
-    height: 100vh;
+    height: 120vh;
     max-width: 100%;
 }
 
@@ -21,6 +21,7 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(900px, 1fr));
     justify-content: center;
+    margin-top: 100px;
 }
 
 .toc{

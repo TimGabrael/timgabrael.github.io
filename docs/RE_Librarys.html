@@ -2,17 +2,179 @@
 <html lang="en">
 <head>
     <link rel="stylesheet" href="docstyle.css">
-    <div class="HeadingWrapper">
-        <a class="HomeButton" href="../index.html"><img src="https://www.svgrepo.com/show/96177/home-button.svg" width="30px"></a>
-        <h1 class="header">
-            RE Librarys Documentation
-        </h1>
-    </div>
+    <link rel="shortcut icon" href="https://cdn-icons-png.flaticon.com/512/2411/2411812.png"/>
 </head>
 
+
 <body>
-    WORK IN PROGRESS<br>
-    Hier wird Gebaut kommen sie später nochmal wieder<br>
+
+
+
+    <section class="content" id="ReLib">
+        <div class="HeadingWrapper">
+
+            <a class="HomeButton" href="../index.html"><img src="https://www.svgrepo.com/show/96177/home-button.svg" width="30px"></a>
+            <h1 class="header">
+                RE Librarys Documentation
+            </h1>
+        </div>
+        <div class="tocWrapper">
+            <ul>
+                <li>
+                    <a href="#NewMem" class="listItem">
+                        NewMemory.h
+                        <ul>
+                            <li class="NFuncList">
+                                <a style="text-decoration: none;" href="#ldisasm">ldisasm</a>
+                            </li>
+                        </ul>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+
+
+    <section class="content" id="NewMem">
+        <div class="HeadingWrapper">
+
+            <a class="HomeButton" href="../index.html"><img src="https://www.svgrepo.com/show/96177/home-button.svg" width="30px"></a>
+            <a class="UpButton" href="#ReLib"><img src="https://www.svgrepo.com/show/43797/move-up.svg" width="30px"></a>
+            <h1 class="header">
+                NewMemory.h
+            </h1>
+        </div>
+
+        <div class="docList">
+
+            <div class="DocWrapper" id="ldisasm">
+                <div class="function">
+                    <p>
+                        <span class="parameter">size_t</span>
+                        <span class="FName"> ldisasm</span>(<span class="void">const void* const </span> address);
+                    </p>
+                </div>
+                <div class="desc">
+                    <div class="inWrapper">
+                        <h1 class="inOutHeader">
+                            IN:
+                        </h1>
+                        <ul class="inList">
+                            <li>
+                            <div>
+                                <span class="inItem">address:</span>
+                                <br> Address of the Instruction of which the length will be determined,
+                                the address needs to be the start of the instruction, otherwise the Instruction will be missinterpreted
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="outWrapper">
+                    <h1 class="inOutHeader">
+                        OUT:
+                    </h1>
+                    <ul class="outItem">
+                        Size of the Instruction pointed to by address.
+                    </ul>
+                </div>
+                
+            </div>
+        </div>
+        
+        <div class="DocWrapper" id="DirectTrampolineHook">
+            <div class="function">
+                <p>
+                    <span class="parameter">uintptr_t</span>
+                    <span class="FName"> DirectTrampolineHook</span>(<span class="parameter">uintptr_t </span> start
+                    <span class="parameter">uintptr_t </span> cb_func);
+                </p>
+            </div>
+            <div class="desc">
+                This Function is not ideal for many use cases, because you have to manually call the function again, (which was returned by this call),
+                it requires that the signature it is called with later on is the exact one used in the original function.<br>
+                <span style="text-decoration: underline;">Example:</span><br>IDXGISwapChain::Present needs to be overridden as follows:<br>[ Present → HRESULT(*Cb_func)(UINT, UINT) → return og(UINT, UINT); ]
+                <div class="inWrapper">
+                    <h1 class="inOutHeader">
+                        IN:
+                    </h1>
+                    <ul class="inList">
+                        <li>
+                            <div>
+                                <span class="inItem">start:</span>
+                                <br>Start of the Assembly that is going to be overriden with the Hook.
+                            </div>
+                        </li>
+                        <li>
+                            <div>
+                                <span class="inItem">cb_func:</span><br>
+                                Callback Function, that is going to be called by the trampoline Hook.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="outWrapper">
+                    <h1 class="inOutHeader">
+                        OUT:
+                    </h1>
+                    <ul class="outItem">
+                        returns the new original function address, that is now in the Trampoline part, as it needs to call the overridden instructions.
+                    </ul>
+                </div>
+                
+            </div>
+        </div>
+        
+        <div class="DocWrapper" id="EasyTrampolineHook">
+            <div class="function">
+                <p>
+                    <span class="void">void</span>
+                    <span class="FName"> EasyTrampolineHook</span>(<span class="parameter">uintptr_t </span> start
+                    <span class="parameter">uintptr_t </span> cb_func);
+                </p>
+            </div>
+            <div class="desc">
+                This Function is a little better than <a href="#DirectTrampolineHook">DirectTrampolineHook</a> in terms of ease of use,
+                the Function internally pushes the return value on the stack so the cb_func needs to keep the values in the input registers,
+                or in case of x86 not change the previous stackframe which should hopefully be quite challenging. But it also means, that the calling convention of x86 functions is mangled for a variety of calling conventions
+                as the return function is pushed ontop of the current frame,<br>
+                theirfore it transforms a <span style="color: green;"> void(*)(int) → void(*)(void* ret_addr, int);</span>
+                <div class="inWrapper">
+                    <h1 class="inOutHeader">
+                        IN:
+                    </h1>
+                    <ul class="inList">
+                        <li>
+                            <div>
+                                <span class="inItem">start:</span>
+                                <br>Start of the Assembly that is going to be overriden with the Hook.
+                            </div>
+                        </li>
+                        <li>
+                            <div>
+                                <span class="inItem">cb_func:</span><br>
+                                Callback Function, that is going to be called by the trampoline Hook.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                
+               
+            </div>
+        </div>
+
+
+    </div>
+        
+    </section>
+    
+    
+    
 </body>
+
+
+
 
 </html>

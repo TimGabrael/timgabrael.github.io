@@ -7,9 +7,13 @@
     --card-border-hover-color: #868;
     --card-bg-color: white;
     --card-text-color: RGB(217,169,48);
+
+    --doc-bg-color-in: rgba(138, 32, 32, 0.479);
+    --doc-bg-color-out: rgba(143, 19, 19, 0.479);
 }
 
 html{
+    scroll-padding-top: 100px;
     scrollbar-width: normal;
     scrollbar-color: #777 #555;
     scroll-behavior: smooth;
@@ -17,6 +21,7 @@ html{
     margin-left: 0px;
     margin-top: 0px;
     margin-right: 0px;
+    padding: 0;
 }
 html::-webkit-scrollbar{
     width: 1vw;
@@ -35,17 +40,29 @@ html::-webkit-scrollbar-track{
 html::-webkit-scrollbar-track-hover{
     background-color: #555;
 }
+body{
+    margin: 0px;
+    padding: 0px;
+}
 
 
 .HeadingWrapper{
+    position: sticky;
     display: flex;
-    position: static;
+    top: 0;
+    bottom: 100px;
+    background-color: #0005;
 }
 
 .HomeButton{
-    margin-left: 10px;
-    margin-top: 10px;
+    padding-left: 2rem;
     filter:invert();
+    align-self: center;
+}
+.UpButton{
+    padding-left: 1rem;
+    filter: invert();
+    align-self: center;
 }
 
 .inverted
