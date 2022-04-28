@@ -16,15 +16,19 @@ a{
     max-height: 100%;
 }
 .tocWrapper{
-    margin-left: 15rem;
+    margin-left: 1rem;
 }
 .listItem{
     margin-left: 0rem;
     color: var(--card-text-color);
 }
-.NFuncList{
-    list-style: disc;
-    padding-left: rem;
+.gridWrapper{
+    padding-left: 1rem;
+    padding-top: 10px;
+    display: grid;
+    grid-gap: 5px;
+    grid-template-columns: repeat(auto-fit, 300px);
+
 }
 
 .docList{

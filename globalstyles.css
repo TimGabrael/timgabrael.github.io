@@ -8,8 +8,14 @@
     --card-bg-color: white;
     --card-text-color: RGB(217,169,48);
 
+
+    --sidebar-width: 5rem;
+    --sidebar-bg-color: #050505;
+    --sidebar-item-bg-color: #151515;
+
     --doc-bg-color-in: rgba(138, 32, 32, 0.479);
     --doc-bg-color-out: rgba(143, 19, 19, 0.479);
+
 }
 
 html{
@@ -24,7 +30,7 @@ html{
     padding: 0;
 }
 html::-webkit-scrollbar{
-    width: 1vw;
+    width: 0.8vw;
 }
 html::-webkit-scrollbar-thumb{
     background-color: #7775;
@@ -45,23 +51,17 @@ body{
     padding: 0px;
 }
 
-
 .HeadingWrapper{
-    position: sticky;
     display: flex;
-    top: 0;
-    bottom: 100px;
     background-color: #0005;
 }
 
 .HomeButton{
-    padding-left: 2rem;
-    filter:invert();
-    align-self: center;
+    filter: invert(1);
 }
 .UpButton{
     padding-left: 1rem;
-    filter: invert();
+    filter: invert(1);
     align-self: center;
 }
 
@@ -72,6 +72,7 @@ body{
 }
 
 body {
+    margin-left: var(--sidebar-width);
     background-repeat: no-repeat;
     background-color: var(--main-bg-color);
     color: var(--main-text-color);
@@ -83,4 +84,158 @@ body {
     text-align: center;
     text-decoration: underline;
     color: var(--main-header-color);
+}
+
+
+.sidebar{
+    height: 100%;
+    width: var(--sidebar-width);
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: var(--sidebar-bg-color);
+    overflow: hidden;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+}
+.sidebar  .sidebar-subitem{
+    background-color:  var(--sidebar-item-bg-color);    
+    color: white;
+    text-decoration: none;
+}
+
+.sidebar-item{
+    width: 100%;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    background-color:  var(--sidebar-item-bg-color);    
+    color: white;
+    text-decoration: none;
+}
+
+
+.sidebar-bottom .sidebar-item{
+    margin-bottom: 0px;
+}
+
+.sidebar .selectable-div label{
+    background-color: val(--sidebar-item-bg-color);
+}
+
+
+.sidebar-top {
+    width: 100%;
+    padding-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.sidebar-middle{
+    width: 100%;
+    flex-grow: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    outline: 1px solid lightgray;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    
+}
+.sidebar-middle::-webkit-scrollbar{
+    width: 0.8vw;
+}
+.sidebar-middle::-webkit-scrollbar-thumb{
+    background-color: #7775;
+    border-radius: 5px;
+}
+.sidebar-middle::-webkit-scrollbar-thumb:hover{
+    background-color: #777;
+    border-radius: 5px;
+}
+.sidebar-middle::-webkit-scrollbar-track{
+    background-color: #5555;
+}
+.sidebar-middle::-webkit-scrollbar-track-hover{
+    background-color: #555;
+}
+
+.sidebar-bottom{
+    margin-top: 1rem;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.selectable-div{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+.subdiv{
+    width: 100%;
+    display: none;
+}
+
+
+.MCheckbox{
+    display: none;
+}
+
+.sidebar-middle label{
+    width: 100%;
+    background-color: var(--sidebar-item-bg-color);
+}
+
+
+:checked + .MenuLabel img{
+    background-color: red;
+}
+
+.sidebar label{
+    color: white;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+.sidebar label img{
+    transition: transform 0.2s;
+}
+
+.sidebar :checked + label{
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+.sidebar :checked + label img.arrow{
+    transform: rotate(90deg);
+}
+.sidebar .selectable-div .sidebar-subitem{
+    display: none;
+    width: 100%;
+}
+
+
+.sidebar :checked ~ .sidebar-subitem{
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    padding-left: -1rem;
+    margin-top: 1px;
+    left: 0px;
+}
+
+
+.sidebar :checked ~.subdiv{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-left: 1rem;
 }

@@ -5,11 +5,61 @@
     <link rel="shortcut icon" href="https://cdn-icons-png.flaticon.com/512/2411/2411812.png"/>
 </head>
 
+<div class="sidebar">
+    <div class="sidebar-top">
+        <a class="HomeButton" href="index.html"><img src="Home.svg" width="32px"></a><div></div>
+        <input type="checkbox" id="MenuCheckbox" class="MCheckbox" /><label class="MenuLabel" for="MenuCheckbox"><img src="Menu.svg" width="32px" style="filter: invert(1);" /></label>
+
+        <a href="#" class="sidebar-item">About</a>
+        <a href="#" class="sidebar-item">Contact</a>
+    </div>
+    <div class="sidebar-middle">
+        <div class="selectable-div">
+            <input type="checkbox" id="cb1" class="MCheckbox">
+            <label for="cb1"><img class="arrow" src="Arrow-Right.svg" width="10px" />test</label>
+            <a href="#" class="sidebar-subitem">SubItem1</a>
+            <a href="#" class="sidebar-subitem">SubItem2</a>
+            <a href="#" class="sidebar-subitem">SubItem3</a>
+        </div>
+        <div class="selectable-div">
+
+            <input type="checkbox" id="cb2" class="MCheckbox">
+            <label for="cb2"><img class="arrow" src="Arrow-Right.svg" width="10px" />label</label>
+            <a href="#" class="sidebar-subitem">Item2</a>
+            <a href="#" class="sidebar-subitem">Item3</a>
+            <a href="#" class="sidebar-subitem">Item4</a>
+
+            <div class="subdiv">
+                <input type="checkbox" id="cb3" class="MCheckbox">
+                <label for="cb3"><img class="arrow" src="Arrow-Right.svg" width="10px" />label</label>
+                <a href="#" class="sidebar-subitem">Item2</a>
+                <a href="#" class="sidebar-subitem">Item3</a>
+                <a href="#" class="sidebar-subitem">Item4</a>
+
+
+                <div class="subdiv">
+                    <input type="checkbox" id="cb4" class="MCheckbox">
+                    <label for="cb4"><img class="arrow" src="Arrow-Right.svg" width="10px" />label</label>
+                    <a href="#" class="sidebar-subitem">Item2</a>
+                    <a href="#" class="sidebar-subitem">Item3</a>
+                    <a href="#" class="sidebar-subitem">Item4</a>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    <div class="sidebar-bottom">
+        <a href="#"  class="sidebar-item">End</a>
+    </div>
+</div>
+
 <body>
+
 
 <div class="viewport" id="Overview">
     <div class="HeadingWrapper">
-        <a class="HomeButton" href="index.html"><img src="https://www.svgrepo.com/show/96177/home-button.svg" width="30px"></a>
         <h1 class="header">
             OVERVIEW
         </h1>
@@ -35,7 +85,6 @@
 
 <div class="viewport" id="Projects">
     <div class="HeadingWrapper">
-        <a class="HomeButton" href="#Overview"><img src="https://www.svgrepo.com/show/96177/home-button.svg" width="30px"></a>
         <h2 class="header">Librarys</h2>
     </div>
     <section>
@@ -51,7 +100,7 @@
                 <div class="card-footer">
                     <a href="docs/RE_Librarys.html" class="docLink">Documentation</a>
                     <a href="https://github.com/TimGabrael/RE_Librarys" class="githubLink">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg" width="30rem" height="30rem" class="inverted">
+                        <img src="GithubIcon.svg" width="30rem" height="30rem">
                     </a>
                 </div>
             </div>
@@ -67,7 +116,7 @@
                 <div class="card-footer">
                     <a href="docs/UniDraw.html" class="docLink">Documentation</a>
                     <a href="https://github.com/TimGabrael/UniDraw" class="githubLink">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg" width="30rem" height="30rem" class="inverted">
+                        <img src="GithubIcon.svg" width="30rem" height="30rem">
                     </a>
                 </div>
             </div>
@@ -77,7 +126,6 @@
 
 <div class="viewport" id="Findings">
     <div class="HeadingWrapper">
-        <a class="HomeButton" href="#Overview"><img src="https://www.svgrepo.com/show/96177/home-button.svg" width="30px"></a>
         <h2 class="header">Findings</h2>
     </div>
     <section>

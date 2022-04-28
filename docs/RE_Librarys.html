@@ -6,14 +6,63 @@
 </head>
 
 
+<div class="sidebar">
+    <div class="sidebar-top">
+        <a class="HomeButton" href="../index.html"><img src="../Home.svg" width="32px"></a><div></div>
+        <input type="checkbox" id="MenuCheckbox" class="MCheckbox" /><label class="MenuLabel" for="MenuCheckbox"><img src="../Menu.svg" width="32px" style="filter: invert(1);" /></label>
+
+        <a href="#" class="sidebar-item">About</a>
+        <a href="#" class="sidebar-item">Contact</a>
+    </div>
+    <div class="sidebar-middle">
+        <div class="selectable-div">
+            <input type="checkbox" id="cb1" class="MCheckbox">
+            <label for="cb1"><img class="arrow" src="../Arrow-Right.svg" width="10px" />test</label>
+            <a href="#" class="sidebar-subitem">SubItem1</a>
+            <a href="#" class="sidebar-subitem">SubItem2</a>
+            <a href="#" class="sidebar-subitem">SubItem3</a>
+        </div>
+        <div class="selectable-div">
+
+            <input type="checkbox" id="cb2" class="MCheckbox">
+            <label for="cb2"><img class="arrow" src="../Arrow-Right.svg" width="10px" />label</label>
+            <a href="#" class="sidebar-subitem">Item2</a>
+            <a href="#" class="sidebar-subitem">Item3</a>
+            <a href="#" class="sidebar-subitem">Item4</a>
+
+            <div class="subdiv">
+                <input type="checkbox" id="cb3" class="MCheckbox">
+                <label for="cb3"><img class="arrow" src="../Arrow-Right.svg" width="10px" />label</label>
+                <a href="#" class="sidebar-subitem">Item2</a>
+                <a href="#" class="sidebar-subitem">Item3</a>
+                <a href="#" class="sidebar-subitem">Item4</a>
+
+
+                <div class="subdiv">
+                    <input type="checkbox" id="cb4" class="MCheckbox">
+                    <label for="cb4"><img class="arrow" src="../Arrow-Right.svg" width="10px" />label</label>
+                    <a href="#" class="sidebar-subitem">Item2</a>
+                    <a href="#" class="sidebar-subitem">Item3</a>
+                    <a href="#" class="sidebar-subitem">Item4</a>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    <div class="sidebar-bottom">
+        <a href="#"  class="sidebar-item">End</a>
+    </div>
+</div>
+
+
 <body>
 
 
 
     <section class="content" id="ReLib">
         <div class="HeadingWrapper">
-
-            <a class="HomeButton" href="../index.html"><img src="https://www.svgrepo.com/show/96177/home-button.svg" width="30px"></a>
             <h1 class="header">
                 RE Librarys Documentation
             </h1>
@@ -23,12 +72,13 @@
                 <li>
                     <a href="#NewMem" class="listItem">
                         NewMemory.h
-                        <ul>
-                            <li class="NFuncList">
-                                <a style="text-decoration: none;" href="#ldisasm">ldisasm</a>
-                            </li>
-                        </ul>
                     </a>
+                    <div class="gridWrapper">
+                        <a style="text-decoration: none;" href="#ldisasm">ldisasm</a>
+                        <a style="text-decoration: none;" href="#DirectTrampolineHook">DirectTrampolineHook</a>
+                        <a style="text-decoration: none;" href="#EasyTrampolineHook">EasyTrampolineHook</a>
+                        <a style="text-decoration: none;" href="#CustomTrampolineHook">CustomTrampolineHook</a>
+                    </div>
                 </li>
             </ul>
         </div>
@@ -39,8 +89,6 @@
     <section class="content" id="NewMem">
         <div class="HeadingWrapper">
 
-            <a class="HomeButton" href="../index.html"><img src="https://www.svgrepo.com/show/96177/home-button.svg" width="30px"></a>
-            <a class="UpButton" href="#ReLib"><img src="https://www.svgrepo.com/show/43797/move-up.svg" width="30px"></a>
             <h1 class="header">
                 NewMemory.h
             </h1>
@@ -87,14 +135,15 @@
             <div class="function">
                 <p>
                     <span class="parameter">uintptr_t</span>
-                    <span class="FName"> DirectTrampolineHook</span>(<span class="parameter">uintptr_t </span> start
+                    <span class="FName"> DirectTrampolineHook</span>(<span class="parameter">uintptr_t </span> start,
                     <span class="parameter">uintptr_t </span> cb_func);
                 </p>
             </div>
             <div class="desc">
                 This Function is not ideal for many use cases, because you have to manually call the function again, (which was returned by this call),
                 it requires that the signature it is called with later on is the exact one used in the original function.<br>
-                <span style="text-decoration: underline;">Example:</span><br>IDXGISwapChain::Present needs to be overridden as follows:<br>[ Present → HRESULT(*Cb_func)(UINT, UINT) → return og(UINT, UINT); ]
+                <span style="text-decoration: underline;">Example:</span><br>IDXGISwapChain::Present needs to be overridden as follows:<br>[ Present → HRESULT(*Cb_func)(UINT, UINT) → return og(UINT, UINT); ]<br>
+                usually <a href="#CustomTrampolineHook">CustomTrampolineHook</a> / <a href="#TSCustomTrampolineHook">TSCustomTrampolineHook</a> should be used.
                 <div class="inWrapper">
                     <h1 class="inOutHeader">
                         IN:
@@ -131,7 +180,7 @@
             <div class="function">
                 <p>
                     <span class="void">void</span>
-                    <span class="FName"> EasyTrampolineHook</span>(<span class="parameter">uintptr_t </span> start
+                    <span class="FName"> EasyTrampolineHook</span>(<span class="parameter">uintptr_t </span> start,
                     <span class="parameter">uintptr_t </span> cb_func);
                 </p>
             </div>
@@ -164,6 +213,79 @@
                
             </div>
         </div>
+
+
+        <div class="DocWrapper" id="CustomTrampolineHook">
+            <div class="function">
+                <p>
+                    <span class="void">void</span>
+                    <span class="FName"> CustomTrampolineHook</span>(<span class="parameter">uintptr_t </span> start,
+                    <span class="parameter">CustomFunc </span> cb_func);
+                </p>
+            </div>
+            <div class="desc">
+                Standard Hooking Method, useful for every situation, gives a full stacktrace to the user that will later be written to the cpu,
+                otherwise the whole cpu state is preserved, and the function automatically returns to itself
+                <div class="inWrapper">
+                    <h1 class="inOutHeader">
+                        IN:
+                    </h1>
+                    <ul class="inList">
+                        <li>
+                            <div>
+                                <span class="inItem">start:</span>
+                                <br>Start of the Assembly that is going to be overriden with the Hook.
+                            </div>
+                        </li>
+                        <li>
+                            <div>
+                                <span class="inItem">cb_func:</span><br>
+                                Callback Function, that is going to be called by the trampoline Hook.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                
+               
+            </div>
+        </div>
+
+        <div class="DocWrapper" id="TSCustomTrampolineHook">
+            <div class="function">
+                <p>
+                    <span class="void">void</span>
+                    <span class="FName"> TSCustomTrampolineHook</span>(<span class="parameter">uintptr_t </span> start,
+                    <span class="parameter">CustomFunc </span> cb_func);
+                </p>
+            </div>
+            <div class="desc">
+                Thread Safe version of <a href="#CustomTrampolineHook">CustomTrampolineHook</a>, currently only implemented for x64 processes, x86 will still do something, but it crashed in the latest tests and needs to be fixed
+                <div class="inWrapper">
+                    <h1 class="inOutHeader">
+                        IN:
+                    </h1>
+                    <ul class="inList">
+                        <li>
+                            <div>
+                                <span class="inItem">start:</span>
+                                <br>Start of the Assembly that is going to be overriden with the Hook.
+                            </div>
+                        </li>
+                        <li>
+                            <div>
+                                <span class="inItem">cb_func:</span><br>
+                                Callback Function, that is going to be called by the trampoline Hook.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                
+               
+            </div>
+        </div>
+
+
+
 
 
     </div>
