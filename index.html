@@ -2,101 +2,75 @@
 <html lang="en">
 <head>
     <link rel="stylesheet" href="style.css">
-    <link rel="shortcut icon" href="https://cdn-icons-png.flaticon.com/512/2411/2411812.png"/>
+    <link rel="shortcut icon" href="Snowflake.png"/>
 </head>
 
-<div class="sidebar">
-    <div class="sidebar-top">
-        <a class="HomeButton" href="index.html"><img src="Home.svg" width="32px"></a><div></div>
-        <input type="checkbox" id="MenuCheckbox" class="MCheckbox" /><label class="MenuLabel" for="MenuCheckbox"><img src="Menu.svg" width="32px" style="filter: invert(1);" /></label>
 
-        <a href="#" class="sidebar-item">About</a>
-        <a href="#" class="sidebar-item">Contact</a>
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-top">
+       
+        <div class="navs">
+           <a href="index.html"><img src="Home.svg" width="32px"></a>
+           <button type="checkbox" id="MenuBtn" style="border: 0; background: transparent;">
+            <img src="Menu.svg" width="32px"/>
+            </button>
+        </div>
+       
+
+        <a href="#Overview">About</a>
     </div>
     <div class="sidebar-middle">
-        <div class="selectable-div">
+        <div class="selectionWrapper">
+            
             <input type="checkbox" id="cb1" class="MCheckbox">
-            <label for="cb1"><img class="arrow" src="Arrow-Right.svg" width="10px" />test</label>
-            <a href="#" class="sidebar-subitem">SubItem1</a>
-            <a href="#" class="sidebar-subitem">SubItem2</a>
-            <a href="#" class="sidebar-subitem">SubItem3</a>
-        </div>
-        <div class="selectable-div">
-
-            <input type="checkbox" id="cb2" class="MCheckbox">
-            <label for="cb2"><img class="arrow" src="Arrow-Right.svg" width="10px" />label</label>
-            <a href="#" class="sidebar-subitem">Item2</a>
-            <a href="#" class="sidebar-subitem">Item3</a>
-            <a href="#" class="sidebar-subitem">Item4</a>
-
-            <div class="subdiv">
-                <input type="checkbox" id="cb3" class="MCheckbox">
-                <label for="cb3"><img class="arrow" src="Arrow-Right.svg" width="10px" />label</label>
-                <a href="#" class="sidebar-subitem">Item2</a>
-                <a href="#" class="sidebar-subitem">Item3</a>
-                <a href="#" class="sidebar-subitem">Item4</a>
-
-
-                <div class="subdiv">
-                    <input type="checkbox" id="cb4" class="MCheckbox">
-                    <label for="cb4"><img class="arrow" src="Arrow-Right.svg" width="10px" />label</label>
-                    <a href="#" class="sidebar-subitem">Item2</a>
-                    <a href="#" class="sidebar-subitem">Item3</a>
-                    <a href="#" class="sidebar-subitem">Item4</a>
-                </div>
-
+            <label for="cb1"><img class="arrow" src="Arrow-Right.svg" width="16px" />Librarys</label>
+            <div class="selectable-div-0">
+                <a href="docs/RE_Librarys.html">RE Library</a>
+                <a href="docs/UniDraw.html">UniDraw</a>
+                
             </div>
-
+            
         </div>
+        
 
     </div>
+        
     <div class="sidebar-bottom">
-        <a href="#"  class="sidebar-item">End</a>
+        <a href="#Contact">Contact</a>
     </div>
 </div>
+
+
+
 
 <body>
-
-
-<div class="viewport" id="Overview">
-    <div class="HeadingWrapper">
-        <h1 class="header">
-            OVERVIEW
-        </h1>
-    </div>
-    <div class="info">
-        Welcome here i will showcase some of my findings 
-        and some neat little stuff i have laying around.
-        Aswell as Documentation for my Library's so i don't forget their uses (hopefully).
-    </div>
     
-    <ul class="toc">
-        <label class="header">Table Of Contents</label>
-        <li class="table-content">
-            <a class="table-entry" href="#Projects">Librarys</a>
-        </li>
-        <li class="table-content">
-            <a class="table-entry" href="#Findings">Findings</a>
-        </li>
+
+
+
+    
+    <div class="viewport" id="Overview">
+        <div class="HeadingWrapper">
+            <h1 class="header">
+                OVERVIEW
+            </h1>
+        </div>
+        <div class="info">
+            Welcome here i will showcase some of my findings 
+            and some neat little stuff i have laying around.
+            Aswell as Documentation for my Library's so i don't forget their uses (hopefully).
+        </div>
         
-    </ul>
-</div>
-
-
-<div class="viewport" id="Projects">
-    <div class="HeadingWrapper">
-        <h2 class="header">Librarys</h2>
-    </div>
-    <section>
-        <div class="grid-container">
-            <div class="card mandelbrot">
-                <div class="card-header">RE Librarys</div>
-                <div class="card-body">
-                    Librarys for Reverse Engineering,<br>
-                    mostly for Dll creation, hooking and Rendering<br>
-                    to the Game Window.<br>
-                    Will hopefully be merged with UniDraw at some Point.
-                </div>
+        <section>
+            <div class="grid-container">
+                <div class="card mandelbrot">
+                    <div class="card-header">RE Librarys</div>
+                    <div class="card-body">
+                        Librarys for Reverse Engineering,<br>
+                        mostly for Dll creation, hooking and Rendering<br>
+                        to the Game Window.<br>
+                        Will hopefully be merged with UniDraw at some Point.
+                    </div>
                 <div class="card-footer">
                     <a href="docs/RE_Librarys.html" class="docLink">Documentation</a>
                     <a href="https://github.com/TimGabrael/RE_Librarys" class="githubLink">
@@ -120,18 +94,30 @@
                     </a>
                 </div>
             </div>
-        </div>
-    </section>
-</div>
-
+        </section>
+     
+    </div>
+    
 <div class="viewport" id="Findings">
     <div class="HeadingWrapper">
         <h2 class="header">Findings</h2>
     </div>
-    <section>
 
-    </section>
-</div>
     
+</div>
+
+<div class="HeadingWrapper" id="Contact">
+    <h2 class="header">Contact</h2>
+</div>
+<div class="ctInfo">
+    My Gihub Profil:<br>Good Luck<a href="https://github.com/TimGabrael">
+        <img src="GithubIcon.svg" width="50rem" height="50rem">
+        </a>
+
+</div>
 </body>
+
+
+
+<script src="scriptSidebar.js"></script>
 </html>
