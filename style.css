@@ -16,13 +16,77 @@
     height: 100vh;
     max-width: 100%;
 }
+.table-container{
+    padding-top: 1rem;
+    justify-content: center;
+    align-self: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin: auto;
+    width: var(--main-content-width);
+}
+.container-header{
+    padding-left: 1rem;
+    color: white;
+    text-decoration: underline;
+    font-size: 1.2rem;
+}
+.border{
+    outline: 1px solid gray;
+    margin-left: 1rem;
+    margin-bottom: 1.5rem;
+}
+.border > h2{
+    margin-top: -1.3rem;
+    margin-left: -1rem;
+}
+
 
 .grid-container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(max-content, 1200px));
-    justify-content: center;
-    margin-top: 100px;
+    justify-content: flex-start;
+    flex-grow: 0;
 }
+
+.side-table-container{
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+    justify-content: center;
+    flex-grow: 1;
+}
+.side-table-container > a{ /* Finding */
+    align-self: center;
+    margin-bottom: 1rem;
+    
+    
+    padding-bottom: 2px;
+    padding-top: 2px;
+    width: 95%;
+    
+
+    margin-left: 1.5rem;
+    margin-right: 1.5rem;
+
+    text-align: center;
+    color: var(--card-text-color);
+    background-image: linear-gradient(90deg, #0000,rgba(0, 0, 255, 0.5), rgba(255, 166, 0, 0.8));
+    background-size: 200%;
+    background-position: left;
+    border-radius: 16px;
+    transition: all 1s;
+}
+.side-table-container > a:hover{
+    background-position: right;
+    border: 1px solid var(--card-border-hover-color);
+}
+.side-table-container > a:focus{
+    background-position: right;
+    border: 1px solid var(--card-border-hover-color);
+}
+
+
 
 
 .card {
@@ -40,12 +104,12 @@
 
 
 .mandelbrot{
-    background-image: url("Mandelbrot.png");
+    background-image: url("Assets/Mandelbrot.png");
     background-position: 00% 50%;
 }
 
 .newton{
-    background-image: url("Newton.png");
+    background-image: url("Assets/Newton.png");
     background-position: 00% 50%;
 }
 
@@ -106,3 +170,6 @@
 .ctInfo img{
     padding-left: 1rem;
 }
+
+
+

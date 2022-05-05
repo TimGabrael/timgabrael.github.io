@@ -6,7 +6,7 @@
     --sidebar-anim-time: 500ms;
     --sidebar-grow-anim-time: 300ms;
 
-    --sidebar-small-fontsize: 20px;
+    --sidebar-small-fontsize: 16px;
     --sidebar-large-fontsize: 24px;
 }
 
@@ -40,6 +40,7 @@
 #MenuBtn{
     display: flex;
     justify-content: center;
+    cursor: pointer;
 }
 
 
@@ -54,11 +55,17 @@
     flex-direction: row;
     align-items: flex-end;
 }
-
+.navs > a{
+    width: 100%;
+}
+.navs > button{
+    width: 100%;
+}
 
 .sidebar{
     height: 100%;
     width: var(--sidebar-width);
+    min-width: 80px;
     position: fixed;
     z-index: 1;
     top: 0;
@@ -127,6 +134,7 @@
     background-color:  var(--sidebar-item-bg-color);    
     color: white;
     text-decoration: none;
+    outline: 1px solid gray;
 }
 .sidebar-bottom > a{
     width: 100%;
@@ -134,6 +142,7 @@
     background-color:  var(--sidebar-item-bg-color);    
     color: white;
     text-decoration: none;
+    outline: 1px solid gray;
 }
 
 
@@ -163,6 +172,7 @@
 }
 .sidebar-middle::-webkit-scrollbar{
     width: 0.8vw;
+    max-width: 10px;
 }
 .sidebar-middle::-webkit-scrollbar-thumb{
     background-color: #7775;
@@ -195,6 +205,8 @@
 .sidebar-middle a{
     color: white;
     text-decoration: none;
+    overflow-x: hidden;
+    white-space: nowrap;
 }
 
 .selectable-div-0{

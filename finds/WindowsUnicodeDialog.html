@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="fstyle.css">
+    <link rel="shortcut icon" href="../Assets/Snowflake.png"/>
+</head>
+
+
+
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-top">
+       
+        <div class="navs">
+           <a href="../index.html"><img src="../Assets/Home.svg" width="32px"></a>
+           <button type="checkbox" id="MenuBtn" style="border: 0; background: transparent;">
+            <img src="../Assets/Menu.svg" width="32px"/>
+            </button>
+        </div>
+       
+
+        <a href="#Overview">About</a>
+    </div>
+    <div class="sidebar-middle">
+        <div class="selectionWrapper">
+            
+            <input type="checkbox" id="cb1" class="MCheckbox">
+            <label for="cb1"><img class="arrow" src="../Assets/Arrow-Right.svg" width="16px" />Librarys</label>
+            <div class="selectable-div-0">
+                <a href="../docs/RE_Librarys.html">RE Library</a>
+                <a href="../docs/UniDraw.html">UniDraw</a>
+                
+            </div>
+            
+        </div>
+
+    </div>
+        
+    <div class="sidebar-bottom">
+        <a href="../index.html#Contact">Contact</a>
+    </div>
+</div>
+
+
+<body>
+    <div class="HeadingWrapper">
+        <h1 class="header">
+            Handling Unicode Dialog
+        </h1>
+    </div>
+    
+
+    <div class="content">
+
+        <div class="viewport">
+                <div class="subheader">Problem:</div>
+                <div class="phrase">
+                    The Unicode Dialog, which can be accessed with (win + .), is not trivialy implemented in Windows, as it doesn't cause a <span style="color: lightblue;">WM_UNICODE</span> or similar Key Event,
+                    but needs some additional Processing, the following code is only for custom controls, the native <a href="https://docs.microsoft.com/de-de/windows/win32/controls/edit-control-styles">"EDIT"</a> controls provided by Windows already handle the Dialog correctly
+                </div>
+          
+
+            <div class="subheader">Prerequisits:</div>
+            <div class="phrase">
+                For the Example, I used <a href="https://www.wxwidgets.org/">wxWidgets</a>, as I was working on a little project while this problem occured to me,
+                but the code should be very similar for a normal Win32 application.
+            </div>
+
+            <div class="subheader">Positioning The Dialog Window:</div>
+            <div class="phrase">
+                The Position of the Window is determined by the structure contained in the lParam of the <a href="https://docs.microsoft.com/de-de/windows/win32/intl/wm-ime-request">WM_IME_REQUEST</a> Message,
+                with <span style="color:lightblue;">(wParam == IMR_QUERYCHARPOSITION)</span>.
+                So aligning the Control with the Dialog is done like the following:
+            </div>
+            <pre class="prettyprint lang-cpp" style="max-width: fit-content; max-height: fit-content;">
+virtual LRESULT MSWWindowProc(UINT message, 
+                              WPARAM wParam, 
+                              LPARAM lParam) override  // wxWidgets native WndProc function override
+{
+    if(message == WM_IME_REQUEST)
+    {
+        if(IMR_QUERYCHARPOSITION == wParam)
+        {
+            IMECHARPOSITION* ptr = (IMECHARPOSITION*)lParam;
+            int px,py = 0;
+            this->GetScreenPosition(&px, &py);  // Screen Position of the Control
+            wxSize ctrlSize = this->GetSize();  // Size of the Control
+            ptr->pt.x = px;
+            ptr->pt.y = py + sz.y / 2;
+            return 1;   // IMPORTANT, this tells windows, that the message was Processed
+        }
+    }
+    return wxWindow::MSWWindowProc(message, wParam, lParam);    // wxWidgets DefWndProc for wxWindow
+}
+</pre>
+
+            <div class="subheader">Getting The Unicode Values:</div>
+            <div class="phrase">
+                We have 2 options for taking in the unicode strings, both handle the <a href="https://docs.microsoft.com/de-de/windows/win32/intl/wm-ime-composition">WM_IME_COMPOSITION</a>
+                event send, by the dialog:
+                <div class="subsubheader" id="Option1">Option 1 (DIRECT):</div>
+                <div class="phrase">
+                   in this method the new unicode character is directly appended to the stored string,
+                   the message will have in its lParam a <span style="color: lightblue;">GCS_COMPCLAUSE</span> bit set to tell the application that a new unicode character is available
+                   Getting the string is performed by the Imm/... functions:
+                   
+                   <pre class="prettyprint lang-cpp" style="max-width: fit-content; max-height: fit-content;">
+bool HandleInput(wxWindow* wnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+    static uint32_t ImmCompStrIdx = 0;
+    if(message == WM_IME_STARTCOMPOSITION || message == WM_IME_ENDCOMPOSITION)
+    {
+        ImmCompStrIdx = 0;  // reset the idx every time The Dialog starts / ends
+    }
+    if(message == WM_IME_COMPOSITION)
+    {
+        if(lParam & GCS_COMPCLAUSE)
+        {
+            HWND hWnd = wnd->GetHandle();   // wxWidgets specific
+            HIMC hIMC = ImmGetContext(hWnd);
+            LONG out = ImmGetCompositionStringW(hIMC, GCS_COMPSTR, nullptr, 0);
+            if(out > 0)
+            {
+#ifdef _UNICODE
+                wchar_t* buf = new wchar_t[out/2 + 1];
+                out = ImmGetCompositionStringW(hIMC, GCS_COMPSTR, buf, out + 1) / 2;
+#else
+                char* buf = new char[out + 1];
+                out = ImmGetCompositionStringA(hIMC, GCS_COMPSTR, buf, out + 1);
+#endif
+                for(uint32_t i = ImmCompStrIdx; i < out; i++)
+                {
+                    wnd->str.append(buf[i]);
+                }
+                delete[] buf;
+                ImmCompStrIdx = out;
+                wnd->Refresh();
+            }
+        }
+        return true;   // message handled
+    }
+    return false;   // message not handled
+}
+</pre>
+                    
+
+
+                </div>
+
+
+                <div class="subsubheader" id="Option2">Option 2 (END):</div>
+                <div class="phrase">
+                    Add the Whole Input at the end of the dialog, the way i show it will not give a visible buffer for which
+                    unicode items were already selected, but this can easily be implemented with Option 1 or a native "EDIT" window,
+                    this time the lParam needs to have the <span style="color:lightblue">GCS_RESULTSTR</span> bit set:
+
+
+                    <pre class="prettyprint lang-cpp" style="max-width: fit-content; max-height: fit-content;">
+bool HandleInput(wxWindow* wnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+    if(message == WM_IME_COMPOSITION)
+    {
+        if(lParam & GCS_RESULTSTR)
+        {
+            HWND hWnd = wnd->GetHandle();   // wxWidgets specific
+            HIMC hIMC = ImmGetContext(hWnd);
+            LONG out = ImmGetCompositionStringW(hIMC, GCS_RESULTSTR, nullptr, 0);
+            if(out > 0)
+            {
+#ifdef _UNICODE
+                wchar_t* buf = new wchar_t[out/2 + 1];
+                out = ImmGetCompositionStringW(hIMC, GCS_RESULTSTR, buf, out + 1) / 2;
+#else
+                char* buf = new char[out + 1];
+                out = ImmGetCompositionStringA(hIMC, GCS_RESULTSTR, buf, out + 1);
+#endif
+                for(uint32_t i = 0; i < out; i++)
+                {
+                    wnd->str.append(buf[i]);
+                }
+                delete[] buf;
+                wnd->Refresh();
+            }
+        }
+        return true;   // message handled
+    }
+    return false;   // message not handled
+}
+</pre>
+
+
+                </div>
+
+            </div>
+
+            <div class="subheader">Result:</div>
+            <div class="phrase">
+                Now we need to return the main WndProc function whenever the <span style="color: lightblue;">WM_IME_COMPOSITION</span>
+                is send:
+                
+                <pre class="prettyprint lang-cpp" style="max-width: fit-content; max-height: fit-content;">
+virtual LRESULT MSWWindowProc(UINT message, 
+                              WPARAM wParam, 
+                              LPARAM lParam) override
+{
+    if(message == WM_IME_REQUEST){ ... } // Positioning
+
+    if(HandleInput(this, message, wParam, lParam)) 
+        return 0; // Don't pass the message on to the DefWndProc, we just handled it ourselfs
+
+    return wxWindow::MSWWindowProc(message, wParam, lParam);
+}
+</pre>
+
+            </div>
+
+
+            <img src="../Assets/EmojiExample.gif" class="EmojiGif">
+
+            <div class="phrase" style="margin-top: 1.5rem;">
+                the gif shows 2 custom text boxes and 1 native text box on the bottom, the first custom textbox
+                uses <a href="#Option1">Option 1</a> and the second one uses <a href="#Option2">Option 2</a>
+            </div>
+        </div>
+
+
+
+    </div>
+
+</body>
+
+
+
+
+
+<script src="../scriptSidebar.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+
+</html>
