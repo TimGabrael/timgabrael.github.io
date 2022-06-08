@@ -1,5 +1,4 @@
 @import url("../globalstyles.css");
-@import url("../gsidebarstyle.css");
 
 a{
     color: var(--card-text-color);

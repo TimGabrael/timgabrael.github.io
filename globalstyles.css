@@ -51,12 +51,6 @@ body{
     padding: 0px;
 }
 
-.HeadingWrapper{
-    display: flex;
-    background-color: #0005;
-    box-shadow: 10px 5px 15px -10px var(--card-text-color),10px -5px 15px -10px var(--card-text-color);
-}
-
 
 
 body {
@@ -66,8 +60,17 @@ body {
     color: var(--main-text-color);
 }
 
-
-.header{
+.HeadingWrapper{
+    display: flex;
+    background-color: #0005;
+    box-shadow: 2rem 1rem 3rem -2rem var(--card-text-color), 2rem -1rem 3rem -2rem var(--card-text-color);
+}
+.HeadingWrapper > a{
+    margin-left: 1rem;
+    align-self: center;
+    
+}
+.HeadingWrapper > h1{
     width: 100%;
     font-weight: 800;
     text-align: center;
@@ -76,7 +79,26 @@ body {
 }
 
 
-
+.content{
+    font-size: 20px;
+    width: 100vw;
+    height: 100vh;
+    max-width: 100%;
+    max-height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.viewport{
+    padding-top: 0.5rem;
+    padding-left: 1rem;
+    margin-bottom: 10rem;
+    max-width:var(--main-content-width);
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    flex-wrap: wrap;
+}
 
 
 

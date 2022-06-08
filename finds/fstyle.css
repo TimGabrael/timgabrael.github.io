@@ -1,5 +1,4 @@
 @import url("../globalstyles.css");
-@import url("../gsidebarstyle.css");
 
 
 
@@ -10,21 +9,8 @@ a{
     color: lightcoral;
     text-decoration: none;
 }
-.content{
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-.viewport{
-    padding-top: 0.5rem;
-    padding-left: 1rem;
-    margin-bottom: 10rem;
-    max-width:var(--main-content-width);;
-    display: flex;
-    flex-direction: column;
-    align-items: left;
-    flex-wrap: wrap;
-}
+
+
 
 .subheader{
     margin-top: 3rem;

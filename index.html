@@ -3,132 +3,91 @@
 <head>
     <link rel="stylesheet" href="style.css">
     <link rel="shortcut icon" href="Assets/Snowflake.png"/>
+    <script src="components/header.js" type="text/javascript" defer></script>
 </head>
-
-
-<div class="sidebar" id="sidebar">
-    <div class="sidebar-top">
-       
-        <div class="navs">
-           <a href="index.html"><img src="Assets/Home.svg" width="32px"></a>
-           <button type="checkbox" id="MenuBtn" style="border: 0; background: transparent;">
-            <img src="Assets/Menu.svg" width="32px"/>
-            </button>
-        </div>
-       
-
-        <a href="#Overview">About</a>
-    </div>
-    <div class="sidebar-middle">
-        <div class="selectionWrapper">
-            
-            <input type="checkbox" id="cb1" class="MCheckbox">
-            <label for="cb1"><img class="arrow" src="Assets/Arrow-Right.svg" width="16px" />Librarys</label>
-            <div class="selectable-div-0">
-                <a href="docs/RE_Librarys.html">RE Library</a>
-                <a href="docs/UniDraw.html">UniDraw</a>
-                
-            </div>
-            
-        </div>
-        
-
-    </div>
-        
-    <div class="sidebar-bottom">
-        <a href="#Contact">Contact</a>
-    </div>
-</div>
 
 
 
 
 <body>
-    
-
-
-
-    
-    <div class="viewport" id="Overview">
-        <div class="HeadingWrapper">
-            <h1 class="header">
-                OVERVIEW
-            </h1>
-        </div>
-
-    
+    <div class="HeadingWrapper">
+        <a href="#"><img src="Assets/Home.svg" width="30rem" height="30rem"></a>
+        <h1>
+            OVERVIEW
+        </h1>
+    </div>
+    <section class="content" id="Overview">
         <div class="table-container">
-
+            
             <div class="info">
                 Welcome here i will showcase some of my findings 
                 and some neat little stuff i have laying around.
                 Aswell as Documentation for my Library's so i don't forget their uses (hopefully).
             </div>
-
-
-
+            
+            
+            
             <div class="grid-container border">
-                <h2 class="container-header">Projects:</h2>
-                <div class="card mandelbrot">
-                    <div class="card-header">RE Librarys</div>
-                    <div class="card-body">
-                        Librarys for Reverse Engineering,<br>
-                        mostly for Dll creation, hooking and Rendering<br>
-                        to the Game Window.<br>
-                        Will hopefully be merged with UniDraw at some Point.
-                    </div>
-                    <div class="card-footer">
-                        <a href="docs/RE_Librarys.html" class="docLink">Documentation</a>
-                        <a href="https://github.com/TimGabrael/RE_Librarys" class="githubLink">
-                            <img src="Assets/GithubIcon.svg" width="30rem" height="30rem">
-                        </a>
-                    </div>
+            <h2 class="container-header">Projects:</h2>
+            <div class="card mandelbrot">
+                <div class="card-header">RE Librarys</div>
+                <div class="card-body">
+                    Librarys for Reverse Engineering,<br>
+                    mostly for Dll creation, hooking and Rendering<br>
+                    to the Game Window.<br>
+                    Will hopefully be merged with UniDraw at some Point.
                 </div>
-            
-            
-                <div class="card newton">
-                    <div class="card-header">UniDraw</div>
-                    <div class="card-body">
-                        Unified Renderer [Header-Only]:<br>
-                        Abstracts away the underlying Rendering Api to give a clean and versatile<br>
-                        Rendering Framework. Still very much in development<br>
-                        With only D3D12 implemented
-                    </div>
-                    <div class="card-footer">
-                        <a href="docs/UniDraw.html" class="docLink">Documentation</a>
-                        <a href="https://github.com/TimGabrael/UniDraw" class="githubLink">
-                            <img src="Assets/GithubIcon.svg" width="30rem" height="30rem">
-                        </a>
-                    </div>
+                <div class="card-footer">
+                    <a href="docs/RE_Librarys.html" class="docLink">Documentation</a>
+                    <a href="https://github.com/TimGabrael/RE_Librarys" class="githubLink">
+                        <img src="Assets/GithubIcon.svg" width="30rem" height="30rem">
+                    </a>
                 </div>
             </div>
-            <div class="side-table-container border">
-                <h2 class="container-header">Findings:</h2>
-                
-                <a href="finds/WindowsUnicodeDialog.html">
-                    Handling The Unicode Dialog (Windows)
-                </a>
+        
+        
+            <div class="card newton">
+                <div class="card-header">UniDraw</div>
+                <div class="card-body">
+                    Unified Renderer [Header-Only]:<br>
+                    Abstracts away the underlying Rendering Api to give a clean and versatile<br>
+                    Rendering Framework. Still very much in development<br>
+                    With only D3D12 implemented
+                </div>
+                <div class="card-footer">
+                    <a href="docs/UniDraw.html" class="docLink">Documentation</a>
+                    <a href="https://github.com/TimGabrael/UniDraw" class="githubLink">
+                        <img src="Assets/GithubIcon.svg" width="30rem" height="30rem">
+                    </a>
+                </div>
             </div>
-            
         </div>
+        <div class="side-table-container border">
+            <h2 class="container-header">Findings:</h2>
+            
+            <a href="finds/WindowsUnicodeDialog.html">
+                Handling The Unicode Dialog (Windows)
+            </a>
+        </div>
+        
+    </section>
 
+
+    <div class="HeadingWrapper" id="Contact">
+        <h1>Contact</h1>
     </div>
-    
-
-<div class="HeadingWrapper" id="Contact">
-    <h2 class="header">Contact</h2>
-</div>
-<div class="ctInfo">
-    My Gihub Profil:<br>Good Luck<a href="https://github.com/TimGabrael">
-        <img src="Assets/GithubIcon.svg" width="50rem" height="50rem">
+    <div class="ctInfo">
+        My Gihub Profil:<br>Good Luck
+        <a href="https://github.com/TimGabrael">
+            <img src="Assets/GithubIcon.svg" width="50rem" height="50rem">
         </a>
 
-</div>
+    </div>
+
 
 </body>
 
 
 
-<script src="scriptSidebar.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
 </html>
