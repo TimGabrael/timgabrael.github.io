@@ -3,12 +3,13 @@
     --main-header-color: lightgray;
     --main-text-color: #808080;
 
-    --main-content-width: 60rem;
+    --main-content-width: 62rem;
 
     --card-border-color: #8685;
     --card-border-hover-color: #868;
     --card-bg-color: white;
     --card-text-color: RGB(217,169,48);
+    --header-shadow-color: RGBA(217,169,48,0.2);
 
     --doc-bg-color-in: rgba(138, 32, 32, 0.479);
     --doc-bg-color-out: rgba(143, 19, 19, 0.479);
@@ -58,29 +59,49 @@ body {
     background-repeat: no-repeat;
     background-color: var(--main-bg-color);
     color: var(--main-text-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .HeadingWrapper{
     display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
     background-color: #0005;
-    box-shadow: 2rem 1rem 3rem -2rem var(--card-text-color), 2rem -1rem 3rem -2rem var(--card-text-color);
+    -webkit-box-shadow: 0px 3px 15px 5px var(--header-shadow-color); 
+    box-shadow: 0px 3px 15px 5px var(--header-shadow-color);
 }
-.HeadingWrapper > a{
+
+.HeadingWrapper > div{
+    width: 100%;
+    position: absolute;
+}
+.HeadingWrapper > div > a{
     margin-left: 1rem;
-    align-self: center;
-    
 }
 .HeadingWrapper > h1{
-    width: 100%;
     font-weight: 800;
-    text-align: center;
     text-decoration: underline;
     color: var(--main-header-color);
 }
 
 
 .content{
-    font-size: 20px;
+    width: 100vw;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    max-width:var(--main-content-width);
+    align-self: center;
+
+}
+.full-content{
     width: 100vw;
     height: 100vh;
     max-width: 100%;
@@ -88,19 +109,30 @@ body {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-}
-.viewport{
-    padding-top: 0.5rem;
-    padding-left: 1rem;
-    margin-bottom: 10rem;
+
     max-width:var(--main-content-width);
+    align-self: center;
+}
+.page{
+    background-color: var(--main-bg-color);
+    -webkit-box-shadow: 5px 8px 15px 5px #000000; 
+    box-shadow: 5px 8px 15px 5px #000000;
+}
+
+.viewport{
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-top: 0.5rem;
+    padding-bottom: 10rem;
     display: flex;
     flex-direction: column;
     align-items: left;
     flex-wrap: wrap;
 }
 
-
+.filter-white{
+    filter: invert(100%) sepia(1%) saturate(7483%) hue-rotate(129deg) brightness(105%) contrast(101%);
+}
 
 
 

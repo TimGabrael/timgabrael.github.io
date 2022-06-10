@@ -10,12 +10,10 @@
 
 
     <div class="HeadingWrapper">
-        <a href="../index.html"><img src="../Assets/Home.svg" width="30rem" height="30rem"></a>
-        <h1>
-            RE Librarys Documentation
-        </h1>
+        <div><a href="../index.html"><img src="../Assets/Home.svg" width="30rem" height="30rem"></a></div>
+        <h1>RE Librarys Documentation</h1>
     </div>
-    <section class="content" id="ReLib">
+    <section class="full-content" id="ReLib">
         <div class="tocWrapper">
             <ul>
                 <li>
@@ -35,209 +33,211 @@
 
 
     <div class="HeadingWrapper">
-        <a href="../index.html"><img src="../Assets/Home.svg" width="30rem" height="30rem"></a>
+        <div><a href="../index.html"><img src="../Assets/Home.svg" width="30rem" height="30rem"></a></div>
         <h1>
             NewMemory.h
         </h1>
     </div>
-    <section class="content" id="NewMem">
-        <div class="docList">
+    <div class="content page" id="NewMem">
+        <div class="viewport">
+            
+            <div class="docList">
 
-            <div class="DocWrapper" id="ldisasm">
+                <div class="DocWrapper" id="ldisasm">
+                    <div class="function">
+                        <p>
+                            <span class="parameter">size_t</span>
+                            <span class="FName"> ldisasm</span>(<span class="void">const void* const </span> address);
+                        </p>
+                    </div>
+                    <div class="desc">
+                        <div class="inWrapper">
+                            <h1 class="inOutHeader">
+                                IN:
+                            </h1>
+                            <ul class="inList">
+                                <li>
+                                    <div>
+                                        <span class="inItem">address:</span>
+                                        <br> Address of the Instruction of which the length will be determined,
+                                        the address needs to be the start of the instruction, otherwise the Instruction will be missinterpreted
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    
+                        <div class="outWrapper">
+                            <h1 class="inOutHeader">
+                                OUT:
+                            </h1>
+                            <ul class="outItem">
+                                Size of the Instruction pointed to by address.
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="DocWrapper" id="DirectTrampolineHook">
                 <div class="function">
                     <p>
-                        <span class="parameter">size_t</span>
-                        <span class="FName"> ldisasm</span>(<span class="void">const void* const </span> address);
+                        <span class="parameter">uintptr_t</span>
+                        <span class="FName"> DirectTrampolineHook</span>(<span class="parameter">uintptr_t </span> start,
+                        <span class="parameter">uintptr_t </span> cb_func);
                     </p>
                 </div>
                 <div class="desc">
+                    This Function is not ideal for many use cases, because you have to manually call the function again, (which was returned by this call),
+                    it requires that the signature it is called with later on is the exact one used in the original function.<br>
+                    <span style="text-decoration: underline;">Example:</span><br>IDXGISwapChain::Present needs to be overridden as follows:<br>[ Present → HRESULT(*Cb_func)(UINT, UINT) → return og(UINT, UINT); ]<br>
+                    usually <a href="#CustomTrampolineHook">CustomTrampolineHook</a> / <a href="#TSCustomTrampolineHook">TSCustomTrampolineHook</a> should be used.
                     <div class="inWrapper">
                         <h1 class="inOutHeader">
                             IN:
                         </h1>
                         <ul class="inList">
                             <li>
-                            <div>
-                                <span class="inItem">address:</span>
-                                <br> Address of the Instruction of which the length will be determined,
-                                the address needs to be the start of the instruction, otherwise the Instruction will be missinterpreted
-                            </div>
-                        </li>
-                    </ul>
+                                <div>
+                                    <span class="inItem">start:</span>
+                                    <br>Start of the Assembly that is going to be overriden with the Hook.
+                                </div>
+                            </li>
+                            <li>
+                                <div>
+                                    <span class="inItem">cb_func:</span><br>
+                                    Callback Function, that is going to be called by the trampoline Hook.
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="outWrapper">
+                        <h1 class="inOutHeader">
+                            OUT:
+                        </h1>
+                        <ul class="outItem">
+                            returns the new original function address, that is now in the Trampoline part, as it needs to call the overridden instructions.
+                        </ul>
+                    </div>
+
                 </div>
-                
-                <div class="outWrapper">
-                    <h1 class="inOutHeader">
-                        OUT:
-                    </h1>
-                    <ul class="outItem">
-                        Size of the Instruction pointed to by address.
-                    </ul>
-                </div>
-                
             </div>
+
+            <div class="DocWrapper" id="EasyTrampolineHook">
+                <div class="function">
+                    <p>
+                        <span class="void">void</span>
+                        <span class="FName"> EasyTrampolineHook</span>(<span class="parameter">uintptr_t </span> start,
+                        <span class="parameter">uintptr_t </span> cb_func);
+                    </p>
+                </div>
+                <div class="desc">
+                    This Function is a little better than <a href="#DirectTrampolineHook">DirectTrampolineHook</a> in terms of ease of use,
+                    the Function internally pushes the return value on the stack so the cb_func needs to keep the values in the input registers,
+                    or in case of x86 not change the previous stackframe which should hopefully be quite challenging. But it also means, that the calling convention of x86 functions is mangled for a variety of calling conventions
+                    as the return function is pushed ontop of the current frame,<br>
+                    theirfore it transforms a <span style="color: green;"> void(*)(int) → void(*)(void* ret_addr, int);</span>
+                    <div class="inWrapper">
+                        <h1 class="inOutHeader">
+                            IN:
+                        </h1>
+                        <ul class="inList">
+                            <li>
+                                <div>
+                                    <span class="inItem">start:</span>
+                                    <br>Start of the Assembly that is going to be overriden with the Hook.
+                                </div>
+                            </li>
+                            <li>
+                                <div>
+                                    <span class="inItem">cb_func:</span><br>
+                                    Callback Function, that is going to be called by the trampoline Hook.
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                
+                </div>
+            </div>
+
+
+            <div class="DocWrapper" id="CustomTrampolineHook">
+                <div class="function">
+                    <p>
+                        <span class="void">void</span>
+                        <span class="FName"> CustomTrampolineHook</span>(<span class="parameter">uintptr_t </span> start,
+                        <span class="parameter">CustomFunc </span> cb_func);
+                    </p>
+                </div>
+                <div class="desc">
+                    Standard Hooking Method, useful for every situation, gives a full stacktrace to the user that will later be written to the cpu,
+                    otherwise the whole cpu state is preserved, and the function automatically returns to itself
+                    <div class="inWrapper">
+                        <h1 class="inOutHeader">
+                            IN:
+                        </h1>
+                        <ul class="inList">
+                            <li>
+                                <div>
+                                    <span class="inItem">start:</span>
+                                    <br>Start of the Assembly that is going to be overriden with the Hook.
+                                </div>
+                            </li>
+                            <li>
+                                <div>
+                                    <span class="inItem">cb_func:</span><br>
+                                    Callback Function, that is going to be called by the trampoline Hook.
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                
+                </div>
+            </div>
+
+            <div class="DocWrapper" id="TSCustomTrampolineHook">
+                <div class="function">
+                    <p>
+                        <span class="void">void</span>
+                        <span class="FName"> TSCustomTrampolineHook</span>(<span class="parameter">uintptr_t </span> start,
+                        <span class="parameter">CustomFunc </span> cb_func);
+                    </p>
+                </div>
+                <div class="desc">
+                    Thread Safe version of <a href="#CustomTrampolineHook">CustomTrampolineHook</a>, currently only implemented for x64 processes, x86 will still do something, but it crashed in the latest tests and needs to be fixed
+                    <div class="inWrapper">
+                        <h1 class="inOutHeader">
+                            IN:
+                        </h1>
+                        <ul class="inList">
+                            <li>
+                                <div>
+                                    <span class="inItem">start:</span>
+                                    <br>Start of the Assembly that is going to be overriden with the Hook.
+                                </div>
+                            </li>
+                            <li>
+                                <div>
+                                    <span class="inItem">cb_func:</span><br>
+                                    Callback Function, that is going to be called by the trampoline Hook.
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                
+                </div>
+            </div>
+
+
+
         </div>
-        
-        <div class="DocWrapper" id="DirectTrampolineHook">
-            <div class="function">
-                <p>
-                    <span class="parameter">uintptr_t</span>
-                    <span class="FName"> DirectTrampolineHook</span>(<span class="parameter">uintptr_t </span> start,
-                    <span class="parameter">uintptr_t </span> cb_func);
-                </p>
-            </div>
-            <div class="desc">
-                This Function is not ideal for many use cases, because you have to manually call the function again, (which was returned by this call),
-                it requires that the signature it is called with later on is the exact one used in the original function.<br>
-                <span style="text-decoration: underline;">Example:</span><br>IDXGISwapChain::Present needs to be overridden as follows:<br>[ Present → HRESULT(*Cb_func)(UINT, UINT) → return og(UINT, UINT); ]<br>
-                usually <a href="#CustomTrampolineHook">CustomTrampolineHook</a> / <a href="#TSCustomTrampolineHook">TSCustomTrampolineHook</a> should be used.
-                <div class="inWrapper">
-                    <h1 class="inOutHeader">
-                        IN:
-                    </h1>
-                    <ul class="inList">
-                        <li>
-                            <div>
-                                <span class="inItem">start:</span>
-                                <br>Start of the Assembly that is going to be overriden with the Hook.
-                            </div>
-                        </li>
-                        <li>
-                            <div>
-                                <span class="inItem">cb_func:</span><br>
-                                Callback Function, that is going to be called by the trampoline Hook.
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-                
-                <div class="outWrapper">
-                    <h1 class="inOutHeader">
-                        OUT:
-                    </h1>
-                    <ul class="outItem">
-                        returns the new original function address, that is now in the Trampoline part, as it needs to call the overridden instructions.
-                    </ul>
-                </div>
-                
-            </div>
-        </div>
-        
-        <div class="DocWrapper" id="EasyTrampolineHook">
-            <div class="function">
-                <p>
-                    <span class="void">void</span>
-                    <span class="FName"> EasyTrampolineHook</span>(<span class="parameter">uintptr_t </span> start,
-                    <span class="parameter">uintptr_t </span> cb_func);
-                </p>
-            </div>
-            <div class="desc">
-                This Function is a little better than <a href="#DirectTrampolineHook">DirectTrampolineHook</a> in terms of ease of use,
-                the Function internally pushes the return value on the stack so the cb_func needs to keep the values in the input registers,
-                or in case of x86 not change the previous stackframe which should hopefully be quite challenging. But it also means, that the calling convention of x86 functions is mangled for a variety of calling conventions
-                as the return function is pushed ontop of the current frame,<br>
-                theirfore it transforms a <span style="color: green;"> void(*)(int) → void(*)(void* ret_addr, int);</span>
-                <div class="inWrapper">
-                    <h1 class="inOutHeader">
-                        IN:
-                    </h1>
-                    <ul class="inList">
-                        <li>
-                            <div>
-                                <span class="inItem">start:</span>
-                                <br>Start of the Assembly that is going to be overriden with the Hook.
-                            </div>
-                        </li>
-                        <li>
-                            <div>
-                                <span class="inItem">cb_func:</span><br>
-                                Callback Function, that is going to be called by the trampoline Hook.
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-                
-               
-            </div>
-        </div>
-
-
-        <div class="DocWrapper" id="CustomTrampolineHook">
-            <div class="function">
-                <p>
-                    <span class="void">void</span>
-                    <span class="FName"> CustomTrampolineHook</span>(<span class="parameter">uintptr_t </span> start,
-                    <span class="parameter">CustomFunc </span> cb_func);
-                </p>
-            </div>
-            <div class="desc">
-                Standard Hooking Method, useful for every situation, gives a full stacktrace to the user that will later be written to the cpu,
-                otherwise the whole cpu state is preserved, and the function automatically returns to itself
-                <div class="inWrapper">
-                    <h1 class="inOutHeader">
-                        IN:
-                    </h1>
-                    <ul class="inList">
-                        <li>
-                            <div>
-                                <span class="inItem">start:</span>
-                                <br>Start of the Assembly that is going to be overriden with the Hook.
-                            </div>
-                        </li>
-                        <li>
-                            <div>
-                                <span class="inItem">cb_func:</span><br>
-                                Callback Function, that is going to be called by the trampoline Hook.
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-                
-               
-            </div>
-        </div>
-
-        <div class="DocWrapper" id="TSCustomTrampolineHook">
-            <div class="function">
-                <p>
-                    <span class="void">void</span>
-                    <span class="FName"> TSCustomTrampolineHook</span>(<span class="parameter">uintptr_t </span> start,
-                    <span class="parameter">CustomFunc </span> cb_func);
-                </p>
-            </div>
-            <div class="desc">
-                Thread Safe version of <a href="#CustomTrampolineHook">CustomTrampolineHook</a>, currently only implemented for x64 processes, x86 will still do something, but it crashed in the latest tests and needs to be fixed
-                <div class="inWrapper">
-                    <h1 class="inOutHeader">
-                        IN:
-                    </h1>
-                    <ul class="inList">
-                        <li>
-                            <div>
-                                <span class="inItem">start:</span>
-                                <br>Start of the Assembly that is going to be overriden with the Hook.
-                            </div>
-                        </li>
-                        <li>
-                            <div>
-                                <span class="inItem">cb_func:</span><br>
-                                Callback Function, that is going to be called by the trampoline Hook.
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-                
-               
-            </div>
-        </div>
-
-
-
-
 
     </div>
-        
-    </section>
+      
     
     
     

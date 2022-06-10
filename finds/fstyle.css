@@ -11,7 +11,7 @@ a{
 }
 
 
-
+/* WindowsUnicodeDialog */
 .subheader{
     margin-top: 3rem;
     margin-bottom: 0.5rem;
@@ -42,4 +42,18 @@ a{
     justify-content: center;
     -webkit-box-shadow: 0px 0px 20px 5px rgba(111, 156, 28, 0.75); 
     box-shadow: 0px 0px 20px 5px rgba(111, 156, 28, 0.75);
+}
+
+
+
+/* InjectorBuilder */
+.downloadlink{
+    margin-top: 3rem;
+    background-color: inherit;
+    justify-self: center;
+    text-align: center;
+    border: 1px solid orange;
+}
+.downloadlink > img{
+    color: white;
 }
