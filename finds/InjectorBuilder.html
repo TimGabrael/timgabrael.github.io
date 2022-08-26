@@ -17,7 +17,8 @@
             <div class="phrase">
                 Creates a application that has a specified DLL embedded into it, the output application will inject the DLL in a target process.<br>
                 The DLL will be manually mapped into the process, vector exceptions are enabled.<br>
-                Can be used as post build command<br><br>
+                Can be used as post build command<br>
+                Adds the path to the build exe as a lpReserved parameter in dllmain<br><br>
                 <span style="text-decoration: underline; font-size: 1.1rem;">USAGE:</span>
                 <p class="phrase">Generator.exe &lt;OutExeName&gt;.exe &lt;DllName&gt;.dll &lt;Target&gt;.exe</p>
             </div>
