@@ -374,7 +374,7 @@ class Crossword {
                             continue;
                         }
                         end = [start[0], start[1]];
-                        while(end[0] < this.cols && end[1] < this.rows) {
+                        while((end[0] + delta[0]) < this.cols && (end[1] + delta[1]) < this.rows) {
                             const nextId = (end[1] + delta[1]) * this.cols + (end[0] + delta[0]);
                             if(this.solved[nextId] == '') {
                                 break;
