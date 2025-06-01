@@ -98,6 +98,7 @@ const startHostBtn = document.getElementById('startHostBtn');
 const connectHostBtn = document.getElementById('connectHostBtn');
 const chat = document.getElementById('chat');
 const loadSpiegelBtn = document.getElementById('loadSpiegelBtn');
+const loadSueddeutscheBtn = document.getElementById('loadSueddeutscheBtn');
 const dateInput = document.getElementById('dateInput');
 const crosswordContainer = document.getElementById('crosswordContainer');
 const crosswordHintsContainer = document.getElementById('crosswordHintsContainer');
@@ -127,6 +128,106 @@ loadSpiegelBtn.addEventListener('click', (event) => {
         crosswordGame = new Crossword("spiegel", data);
     });
 });
+loadSueddeutscheBtn.addEventListener('click', (event) => {
+    fetch(`https://raw.githubusercontent.com/TimGabrael/fetch_ci/refs/heads/master/sueddeutsche/${dateInput.value}.html`)
+    .then(response => {
+        if(!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.text();
+    }).then(htmlString => {
+
+        function decodeSueddeutscheString(keyVal, inputText) {
+            var a138 = 256;
+            var a159 = keyVal.length;
+            var a164 = [];
+            for (var i = 0; i < a138; i++)
+            {
+                a164[i] = i;
+            }
+            var a163 = 0;
+            var a144 = '';
+            for (i = 0; i < a138; i++)
+            {
+                a163 = (a163 + a164[i] + keyVal.charCodeAt(i % a159)) % a138;
+                a144 = a164[a163];
+                a164[a163] = a164[i];
+                a164[i] = a144;
+            }
+
+            var a160 = inputText.length;
+            var a137 = '';
+            i = 0;
+            a163 = 0;
+
+            for (var n = 0; n <= a160 - 1; n++)
+            {
+                i = (i + 1) % a138;
+                a163 = (a163 + a164[i]) % a138;
+                a144 = a164[a163];
+                a164[a163] = a164[i];
+                a164[i] = a144;
+                var a76 = a164[(a164[i] + a164[a163]) % a138];
+                a137 += String.fromCharCode(((inputText.charCodeAt(n)-65)^a76));
+            }
+            return a137;
+        }
+
+        // these are all internal variables that may get used in the matchArray eval step
+        let a147 = 0;
+        let a150 = 1;
+        let a151 = 2;
+        let a157 = 3;
+        let a83 = {x: -1, y: -1};
+        let a37 = true;
+        let a41 = 0;
+        let a64 = 1;
+        let a66 = 2;
+        let a31 = 3;
+        let a154 = 0;
+        let a156 = 1;
+        let a155 = 2;
+        let a149 = 3;
+        let a148 = 4;
+        let a152 = 5;
+        let a158 = 6;
+
+        const variableName = 'a116';
+        const keyName = 'a169';
+        const arrayRegex = new RegExp(
+            `(?:var|let|const)\\s+${variableName}\\s*=\\s*(\\[[\\s\\S]*?\\])\\s*;`,
+            'm'
+        );
+        const keyRegex = new RegExp(
+            `(?:var|let|const)\\s+${keyName}\\s*=\\s*(['"])(.*?)\\1\\s*;?`,
+            'm'
+        );
+
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(htmlString, 'text/html');
+        const script = doc.querySelectorAll('script')[1]
+        const code = script.textContent;
+
+        const matchArray = code.match(arrayRegex)[1];
+        const keyStr = code.match(keyRegex)[2];
+        let variable = eval(matchArray);
+        for(let y = 0; y < variable.length; y++) {
+            for(let x = 0; x < variable[y].length; x++) {
+                if(variable[y][x].questions != null) {
+                    for(let i = 0; i < variable[y][x].questions.length; i++) {
+                        variable[y][x].questions[i].question = decodeSueddeutscheString(keyStr, variable[y][x].questions[i].question);
+                        variable[y][x].questions[i].question = variable[y][x].questions[i].question.replaceAll('|', '\n');
+                    }
+                }
+                if(variable[y][x].solution != null) {
+                    variable[y][x].solution = decodeSueddeutscheString(keyStr, variable[y][x].solution);
+                }
+            }
+        }
+
+        crosswordGame = new Crossword("sueddeutsche", variable);
+    });
+});
 
 
 let peer;
@@ -151,6 +252,13 @@ class Crossword {
         if(origin == "spiegel") {
             this.initialize_from_spiegel(data);
         }
+        else if(origin == "sueddeutsche") {
+            this.initialize_from_sueddeutsche(data);
+        }
+        else {
+            return;
+        }
+        this.generate();
 
         sendInfoRequest();
     }
@@ -179,29 +287,127 @@ class Crossword {
                 this.solved.push(elem);
             }
         }
-        this.generate();
+    }
+    initialize_from_sueddeutsche(data) {
+        this.difficulty = 0;
+        this.created = 0;
+        this.cols = data.length;
+        this.rows = data[0].length;
+        this.solved = Array(this.rows * this.cols).fill('');
+        let cy = 0;
+        let cx = 0;
+        for(const subArr of data) {
+            cy = 0;
+            for(const elem of subArr) {
+                if(elem.solution != null) {
+                    const curId = cy * this.cols + cx;
+                    this.solved[curId] = elem.solution;
+                }
+                cy += 1;
+            }
+            cx += 1;
+        }
+
+        cx = 0;
+        cy = 0;
+        let id_counter = 0;
+        for(const subArr of data) {
+            cy = 0;
+            for(const elem of subArr) {
+                if(elem.questions != null) {
+                    for(const question of elem.questions) {
+                        const text = question.question;
+                        const offset = question.startOffest;
+
+                        let start = [cx, cy];
+                        let end = [cx, cy];
+                        let delta = [0, 0];
+                        if(offset == 0) {
+                            // invalid
+                            continue;
+                        }
+                        else if(offset == 1) {
+                            // right in dir right
+                            start = [cx + 1, cy];
+                            delta = [1, 0];
+                        }
+                        else if(offset == 2) {
+                            // right in dir down
+                            start = [cx + 1, cy];
+                            delta = [0, 1];
+                        }
+                        else if(offset == 3) {
+                            // down in dir right
+                            start = [cx, cy + 1];
+                            delta = [1, 0];
+                        }
+                        else if(offset == 4) {
+                            // down in dir down
+                            start = [cx, cy + 1];
+                            delta = [0, 1];
+                        }
+                        else if(offset == 5) {
+                            // left in dir down
+                            start = [cx - 1, cy];
+                            delta = [0, 1];
+                        }
+                        else if(offset == 6) {
+                            // up in dir right
+                            start = [cx, cy - 1];
+                            delta = [1, 0];
+                        }
+                        else {
+                            continue;
+                        }
+                        end = [start[0], start[1]];
+                        while(end[0] < this.cols && end[1] < this.rows) {
+                            const nextId = (end[1] + delta[1]) * this.cols + (end[0] + delta[0]);
+                            if(this.solved[nextId] == '') {
+                                break;
+                            }
+                            end[0] += delta[0];
+                            end[1] += delta[1];
+                        }
+
+                        const myClue = {
+                            id: id_counter,
+                            col: 0, // unused
+                            row: 0, // unused
+                            start: start,
+                            end: end,
+                            text: text,
+                        };
+                        this.clues.push(myClue);
+
+                        id_counter += 1;
+                    }
+                }
+                cy += 1;
+            }
+            cx += 1;
+        }
     }
     generate() {
         crosswordContainer.innerHTML = '';
         const squareSize = 80;
-        crosswordContainer.style.width = `${this.rows * squareSize}`;
-        crosswordContainer.style.height = `${this.cols * squareSize}`;
+        crosswordContainer.style.width = `${this.cols * squareSize}`;
+        crosswordContainer.style.height = `${this.rows * squareSize}`;
         crosswordContainer.style.display = 'grid';
-        crosswordContainer.style.gridTemplateColumns = `repeat(${this.rows}, ${squareSize}px)`;
-        crosswordContainer.style.gridTemplateRows = `repeat(${this.cols}, ${squareSize}px)`;
+        crosswordContainer.style.gridTemplateColumns = `repeat(${this.cols}, ${squareSize}px)`;
+        crosswordContainer.style.gridTemplateRows = `repeat(${this.rows}, ${squareSize}px)`;
 
         crosswordHintsContainer.style.width = '200px';
         crosswordHintsContainer.style.display = 'grid';
         crosswordHintsContainer.style.gridTemplateColumns = `repeat(4, 200px)`;
-        crosswordHintsContainer.style.gridTemplateRows = `repeat(${this.cols}, 100px)`;
+        crosswordHintsContainer.style.gridTemplateRows = `repeat(${this.rows}, 100px)`;
 
-        for(let y = 0; y < this.cols; y++) {
-            for(let x = 0; x < this.rows; x++) {
+        for(let y = 0; y < this.rows; y++) {
+            for(let x = 0; x < this.cols; x++) {
                 const input = document.createElement('input');
                 input.type = 'text';
                 input.maxLength = 1;
                 input.classList.add('crosswordSquare');
-                input.dataset.index = y * this.rows + x;
+                input.dataset.index = y * this.cols + x;
                 input.addEventListener('touchstart', (event) => {
                     event.preventDefault();
                 });
@@ -213,8 +419,8 @@ class Crossword {
 
                 input.addEventListener('keydown', (event) => {
                     event.preventDefault();
-                    let xVal = event.target.dataset.index % this.rows;
-                    let yVal = Math.floor(event.target.dataset.index / this.rows);
+                    let xVal = event.target.dataset.index % this.cols;
+                    let yVal = Math.floor(event.target.dataset.index / this.cols);
                     if(event.key == 'Backspace') {
                         event.target.value = '';
                         sendChangeElement(peer.id, event.target.dataset.index, '');
@@ -236,15 +442,15 @@ class Crossword {
                     }
                     else if(event.key == 'ArrowRight') {
                         const oldxVal = xVal;
-                        if(xVal < (this.rows - 1)) {
+                        if(xVal < (this.cols - 1)) {
                             xVal += 1;
                         }
-                        const newId = yVal * this.rows + xVal;
+                        const newId = yVal * this.cols + xVal;
                         const inputText = crosswordContainer.querySelector(`input[data-index="${newId}"]`);
                         if(!inputText || inputText.disabled) {
                             xVal = oldxVal;
                         }
-                        const validNewId = yVal * this.rows + xVal;
+                        const validNewId = yVal * this.cols + xVal;
                         this.setMovementWithDirection(validNewId, true);
                         return;
                     }
@@ -253,12 +459,12 @@ class Crossword {
                         if(xVal > 0) {
                             xVal -= 1;
                         }
-                        const newId = yVal * this.rows + xVal;
+                        const newId = yVal * this.cols + xVal;
                         const inputText = crosswordContainer.querySelector(`input[data-index="${newId}"]`);
                         if(!inputText || inputText.disabled) {
                             xVal = oldxVal;
                         }
-                        const validNewId = yVal * this.rows + xVal;
+                        const validNewId = yVal * this.cols + xVal;
                         this.setMovementWithDirection(validNewId, true);
                         return;
                     }
@@ -267,26 +473,26 @@ class Crossword {
                         if(yVal > 0) {
                             yVal -= 1;
                         }
-                        const newId = yVal * this.rows + xVal;
+                        const newId = yVal * this.cols + xVal;
                         const inputText = crosswordContainer.querySelector(`input[data-index="${newId}"]`);
                         if(!inputText || inputText.disabled) {
                             yVal = oldyVal;
                         }
-                        const validNewId = yVal * this.rows + xVal;
+                        const validNewId = yVal * this.cols + xVal;
                         this.setMovementWithDirection(validNewId, false);
                         return;
                     }
                     else if(event.key == 'ArrowDown') {
                         const oldyVal = yVal;
-                        if(yVal < (this.cols - 1)) {
+                        if(yVal < (this.rows - 1)) {
                             yVal += 1;
                         }
-                        const newId = yVal * this.rows + xVal;
+                        const newId = yVal * this.cols + xVal;
                         const inputText = crosswordContainer.querySelector(`input[data-index="${newId}"]`);
                         if(!inputText || inputText.disabled) {
                             yVal = oldyVal;
                         }
-                        const validNewId = yVal * this.rows + xVal;
+                        const validNewId = yVal * this.cols + xVal;
                         this.setMovementWithDirection(validNewId, false);
                         return;
                     }
@@ -403,7 +609,7 @@ class Crossword {
                 const dy = Math.min(deltaY, 1);
                 const steps = Math.max(deltaX, deltaY) + 1;
                 for(let i = 0; i < steps; i++) {
-                    const elemId = (clue.start[1] + dy * i) * this.rows + clue.start[0] + dx * i;
+                    const elemId = (clue.start[1] + dy * i) * this.cols + clue.start[0] + dx * i;
                     const inputText = crosswordContainer.querySelector(`input[data-index="${elemId}"]`);
                     if(inputText && (inputText.value == '' || i == (steps - 1))) {
                         localMovement.curClueIdx = clueId;
@@ -460,7 +666,7 @@ class Crossword {
                 const dy = Math.min(deltaY, 1);
                 const steps = Math.max(deltaX, deltaY) + 1;
                 for(let i = 0; i < steps; i++) {
-                    let curId = (clue.start[1] + dy * i) * this.rows + (clue.start[0] + dx * i);
+                    let curId = (clue.start[1] + dy * i) * this.cols + (clue.start[0] + dx * i);
                     const inputText = crosswordContainer.querySelector(`input[data-index="${curId}"]`);
                     inputText.classList.add('green-border');
                 }
@@ -499,7 +705,7 @@ class Crossword {
         const dy = Math.min(deltaY, 1);
         const steps = Math.max(deltaX, deltaY) + 1;
         for(let i = 0; i < steps; i++) {
-            let curId = (clue.start[1] + dy * i) * this.rows + (clue.start[0] + dx * i);
+            let curId = (clue.start[1] + dy * i) * this.cols + (clue.start[0] + dx * i);
             if(curId == id) {
                 return i;
             }
@@ -517,7 +723,7 @@ class Crossword {
             const dy = Math.min(deltaY, 1);
             const steps = Math.max(deltaX, deltaY) + 1;
             for(let i = 0; i < steps; i++) {
-                let curId = (clue.start[1] + dy * i) * this.rows + (clue.start[0] + dx * i);
+                let curId = (clue.start[1] + dy * i) * this.cols + (clue.start[0] + dx * i);
                 if((i == movement.stepIdx - 1 && !forward) || (i == movement.stepIdx + 1 && forward)) {
                     movement.stepIdx = i;
                     return crosswordContainer.querySelector(`input[data-index="${curId}"]`);
@@ -543,6 +749,7 @@ function broadcastFromHost(senderId, data) {
 
 function enableChat() {
     loadSpiegelBtn.hidden = false;
+    loadSueddeutscheBtn.hidden = false;
     dateInput.hidden = false;
     hostControls.style.display = 'none';
     clientControls.style.display = 'none';
@@ -725,6 +932,7 @@ connectHostBtn.onclick = () => {
         hostConn.on('close', () => {
             messageInput.disabled = true;
             loadSpiegelBtn.hidden = true;
+            loadSueddeutscheBtn.hidden = true;
             dateInput.hidden = true;
         });
     });
