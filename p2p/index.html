@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Playground</title>
+        <link rel="stylesheet" href="styles.css" />
+    </head>
+    <body>
+        <h2>Playground</h2>
+
+        <label>
+            Your name:
+            <input type="text" id="username" />
+        </label>
+
+        <div id="hostControls" style="margin-top:20px;">
+            <button id="startHostBtn">Start as Host</button>
+        </div>
+
+        <div id="clientControls" style="margin-top:20px;">
+            <label>
+                Enter Host ID to connect to:
+                <input type="text" id="hostIdInputClient" placeholder="Host ID" />
+            </label>
+            <button id="connectHostBtn">Connect to Host</button>
+        </div>
+
+        <button id="loadSpiegelBtn" hidden>Load Spiegel Rätsel</button>
+        <input id="dateInput" type="text" hidden></button>
+        <div id="crosswordGame">
+            <div id="crosswordContainer"></div>
+            <div id="crosswordHintsContainer"></div>
+        </div>
+
+        <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
+        <script src="app.js"></script>
+    </body>
+</html>
