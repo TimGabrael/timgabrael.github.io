@@ -99,6 +99,7 @@ const connectHostBtn = document.getElementById('connectHostBtn');
 const chat = document.getElementById('chat');
 const loadSpiegelBtn = document.getElementById('loadSpiegelBtn');
 const loadSueddeutscheBtn = document.getElementById('loadSueddeutscheBtn');
+const loadNytBtn = document.getElementById('loadNytBtn');
 const dateInput = document.getElementById('dateInput');
 const crosswordContainer = document.getElementById('crosswordContainer');
 const crosswordHintsContainer = document.getElementById('crosswordHintsContainer');
@@ -228,6 +229,17 @@ loadSueddeutscheBtn.addEventListener('click', (event) => {
         crosswordGame = new Crossword("sueddeutsche", variable);
     });
 });
+loadNytBtn.addEventListener('click', (event) => {
+    fetch(`https://raw.githubusercontent.com/TimGabrael/fetch_ci/refs/heads/master/nyt/${dateInput.value}.json`)
+    .then(response => {
+        if(!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    }).then(data => {
+        crosswordGame = new Crossword("nyt", data.body[0]);
+    });
+});
 
 
 let peer;
@@ -255,11 +267,13 @@ class Crossword {
         else if(origin == "sueddeutsche") {
             this.initialize_from_sueddeutsche(data);
         }
+        else if(origin == "nyt") {
+            this.initialize_from_nyt(data);
+        }
         else {
             return;
         }
         this.generate();
-
         sendInfoRequest();
     }
     initialize_from_spiegel(data) {
@@ -386,6 +400,48 @@ class Crossword {
             }
             cx += 1;
         }
+    }
+    initialize_from_nyt(data) {
+        this.difficulty = 0;
+        this.created = 0;
+        this.cols = data.dimensions.width;
+        this.rows = data.dimensions.height;
+        this.solved = Array(this.rows * this.cols).fill('');
+        let cx = 0;
+        let cy = 0;
+        for(const elem of data.cells) {
+            if(elem.answer != null) {
+                let elemId = cy * this.cols + cx;
+                this.solved[elemId] = elem.answer;
+            }
+            cx += 1;
+            if(cx >= this.cols) {
+                cx = 0;
+                cy += 1;
+            }
+        }
+        let id_counter = 0;
+        for(const clue of data.clues) {
+            let startId = clue.cells[0];
+            let endId = clue.cells[clue.cells.length - 1];
+            let sx = startId % this.cols;
+            let sy = Math.floor(startId / this.cols);
+            let ex = endId % this.cols;
+            let ey = Math.floor(endId / this.cols);
+
+            const myClue = {
+                id: id_counter,
+                col: 0, // unused
+                row: 0, // unused
+                start: [sx, sy],
+                end: [ex, ey],
+                text: clue.text[0].plain,
+            };
+            this.clues.push(myClue);
+            
+            id_counter += 1;
+        }
+
     }
     generate() {
         crosswordContainer.innerHTML = '';
@@ -750,6 +806,7 @@ function broadcastFromHost(senderId, data) {
 function enableChat() {
     loadSpiegelBtn.hidden = false;
     loadSueddeutscheBtn.hidden = false;
+    loadNytBtn.hidden = false;
     dateInput.hidden = false;
     hostControls.style.display = 'none';
     clientControls.style.display = 'none';
@@ -933,6 +990,7 @@ connectHostBtn.onclick = () => {
             messageInput.disabled = true;
             loadSpiegelBtn.hidden = true;
             loadSueddeutscheBtn.hidden = true;
+            loadNytBtn.hidden = true;
             dateInput.hidden = true;
         });
     });
