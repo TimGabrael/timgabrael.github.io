@@ -553,7 +553,8 @@ class Crossword {
                         return;
                     }
                     else if(event.key == 'Tab') {
-                        let newClueIdx = (localMovement.curClueIdx + 1) % this.clues.length;
+                        let nextIdx = (localMovement.curClueIdx + 1);
+                        let newClueIdx = nextIdx % this.clues.length;
                         if(event.shiftKey) {
                             newClueIdx = (localMovement.curClueIdx - 1);
                             if(newClueIdx < 0) {
@@ -589,6 +590,10 @@ class Crossword {
                     }
                 });
                 input.addEventListener('click', (event) => {
+                    const square = event.target;
+                    this.updateMovementInformationFromCurrent(square.dataset.index);
+                });
+                input.addEventListener('touchend', (event) => {
                     const square = event.target;
                     this.updateMovementInformationFromCurrent(square.dataset.index);
                 });
@@ -731,8 +736,10 @@ class Crossword {
         }
     }
     updateMovementInformationFromCurrent(curId) {
+        let cur_is_hor = true;
         if(localMovement.curClueIdx > -1 && localMovement.curClueIdx < this.clues.length) {
             const clue = this.clues[localMovement.curClueIdx];
+            cur_is_hor = clue.start[0] != clue.end[0];
             const stepIdx = this.isIdInClue(clue, curId);
             if(stepIdx > -1) {
                 if(stepIdx != localMovement.stepIdx) {
@@ -742,10 +749,30 @@ class Crossword {
                 }
             }
         }
-        for(let clueIdx in this.clues) {
+        for(let clueIdx = 0; clueIdx < this.clues.length; clueIdx++) {
+            if(clueIdx == localMovement.curClueIdx) {
+                continue;
+            }
+            const clue = this.clues[clueIdx];
+            const clue_is_hor = clue.start[0] != clue.end[0];
+            if(clue_is_hor != cur_is_hor) {
+                continue;
+            }
+            const stepIdx = this.isIdInClue(clue, curId);
+            if(stepIdx > -1) {
+                localMovement.curClueIdx = clueIdx;
+                localMovement.stepIdx = stepIdx;
+                this.updateHighlightingFromMovement();
+                return;
+            }
+        }
+        for(let clueIdx = 0; clueIdx < this.clues.length; clueIdx++) {
+            if(clueIdx == localMovement.curClueIdx) {
+                continue;
+            }
             const clue = this.clues[clueIdx];
             const stepIdx = this.isIdInClue(clue, curId);
-            if(stepIdx > -1 && localMovement.curClueIdx != clueIdx) {
+            if(stepIdx > -1) {
                 localMovement.curClueIdx = clueIdx;
                 localMovement.stepIdx = stepIdx;
                 this.updateHighlightingFromMovement();

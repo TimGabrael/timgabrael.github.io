@@ -54,8 +54,8 @@ label {
 }
 
 button:disabled, input:disabled {
-    background-color: #333;
-    color: #555;
+    background-color: #888;
+    color: #999;
     cursor: not-allowed;
 }
 
