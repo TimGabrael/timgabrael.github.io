@@ -473,99 +473,9 @@ class Crossword {
                 input.addEventListener('mouseup', (event) => { event.preventDefault(); event.target.focus(); });
                 input.addEventListener('touchend', (event) => { event.preventDefault(); event.target.focus(); });
 
-                input.addEventListener('keydown', (event) => {
+                input.addEventListener('beforeinput', (event) => {
                     event.preventDefault();
-                    let xVal = event.target.dataset.index % this.cols;
-                    let yVal = Math.floor(event.target.dataset.index / this.cols);
-                    if(event.key == 'Backspace') {
-                        event.target.value = '';
-                        sendChangeElement(peer.id, event.target.dataset.index, '');
-                        event.target.classList.remove("wrong-info");
-                        if(event.target.value == '') {
-                            const prevInput = this.getNextElemement(localMovement, false);
-                            if(prevInput) {
-                                prevInput.focus();
-                            }
-                            return;
-                        }
-                    }
-                    else if(event.key == ' ') {
-                        const nextInput = this.getNextElemement(localMovement, true);
-                        if(nextInput) {
-                            nextInput.focus();
-                        }
-                        return;
-                    }
-                    else if(event.key == 'ArrowRight') {
-                        const oldxVal = xVal;
-                        if(xVal < (this.cols - 1)) {
-                            xVal += 1;
-                        }
-                        const newId = yVal * this.cols + xVal;
-                        const inputText = crosswordContainer.querySelector(`input[data-index="${newId}"]`);
-                        if(!inputText || inputText.disabled) {
-                            xVal = oldxVal;
-                        }
-                        const validNewId = yVal * this.cols + xVal;
-                        this.setMovementWithDirection(validNewId, true);
-                        return;
-                    }
-                    else if(event.key == 'ArrowLeft') {
-                        const oldxVal = xVal;
-                        if(xVal > 0) {
-                            xVal -= 1;
-                        }
-                        const newId = yVal * this.cols + xVal;
-                        const inputText = crosswordContainer.querySelector(`input[data-index="${newId}"]`);
-                        if(!inputText || inputText.disabled) {
-                            xVal = oldxVal;
-                        }
-                        const validNewId = yVal * this.cols + xVal;
-                        this.setMovementWithDirection(validNewId, true);
-                        return;
-                    }
-                    else if(event.key == 'ArrowUp') {
-                        const oldyVal = yVal;
-                        if(yVal > 0) {
-                            yVal -= 1;
-                        }
-                        const newId = yVal * this.cols + xVal;
-                        const inputText = crosswordContainer.querySelector(`input[data-index="${newId}"]`);
-                        if(!inputText || inputText.disabled) {
-                            yVal = oldyVal;
-                        }
-                        const validNewId = yVal * this.cols + xVal;
-                        this.setMovementWithDirection(validNewId, false);
-                        return;
-                    }
-                    else if(event.key == 'ArrowDown') {
-                        const oldyVal = yVal;
-                        if(yVal < (this.rows - 1)) {
-                            yVal += 1;
-                        }
-                        const newId = yVal * this.cols + xVal;
-                        const inputText = crosswordContainer.querySelector(`input[data-index="${newId}"]`);
-                        if(!inputText || inputText.disabled) {
-                            yVal = oldyVal;
-                        }
-                        const validNewId = yVal * this.cols + xVal;
-                        this.setMovementWithDirection(validNewId, false);
-                        return;
-                    }
-                    else if(event.key == 'Tab') {
-                        let nextIdx = (localMovement.curClueIdx + 1);
-                        let newClueIdx = nextIdx % this.clues.length;
-                        if(event.shiftKey) {
-                            newClueIdx = (localMovement.curClueIdx - 1);
-                            if(newClueIdx < 0) {
-                                newClueIdx = this.clues.length - 1;
-                            }
-                        }
-                        this.setMovementFromClue(newClueIdx);
-                        return;
-                    }
-
-                    const char = event.key;
+                    const char = event.data;
                     if(char.length != 1) {
                         return;
                     }
@@ -587,6 +497,104 @@ class Crossword {
                     const nextInput = this.getNextElemement(localMovement, true);
                     if(nextInput) {
                         nextInput.focus();
+                    }
+                });
+                input.addEventListener('keydown', (event) => {
+                    let xVal = event.target.dataset.index % this.cols;
+                    let yVal = Math.floor(event.target.dataset.index / this.cols);
+                    if(event.key == 'Backspace') {
+                        event.preventDefault();
+                        event.target.value = '';
+                        sendChangeElement(peer.id, event.target.dataset.index, '');
+                        event.target.classList.remove("wrong-info");
+                        if(event.target.value == '') {
+                            const prevInput = this.getNextElemement(localMovement, false);
+                            if(prevInput) {
+                                prevInput.focus();
+                            }
+                            return;
+                        }
+                    }
+                    else if(event.key == ' ') {
+                        event.preventDefault();
+                        const nextInput = this.getNextElemement(localMovement, true);
+                        if(nextInput) {
+                            nextInput.focus();
+                        }
+                        return;
+                    }
+                    else if(event.key == 'ArrowRight') {
+                        event.preventDefault();
+                        const oldxVal = xVal;
+                        if(xVal < (this.cols - 1)) {
+                            xVal += 1;
+                        }
+                        const newId = yVal * this.cols + xVal;
+                        const inputText = crosswordContainer.querySelector(`input[data-index="${newId}"]`);
+                        if(!inputText || inputText.disabled) {
+                            xVal = oldxVal;
+                        }
+                        const validNewId = yVal * this.cols + xVal;
+                        this.setMovementWithDirection(validNewId, true);
+                        return;
+                    }
+                    else if(event.key == 'ArrowLeft') {
+                        event.preventDefault();
+                        const oldxVal = xVal;
+                        if(xVal > 0) {
+                            xVal -= 1;
+                        }
+                        const newId = yVal * this.cols + xVal;
+                        const inputText = crosswordContainer.querySelector(`input[data-index="${newId}"]`);
+                        if(!inputText || inputText.disabled) {
+                            xVal = oldxVal;
+                        }
+                        const validNewId = yVal * this.cols + xVal;
+                        this.setMovementWithDirection(validNewId, true);
+                        return;
+                    }
+                    else if(event.key == 'ArrowUp') {
+                        event.preventDefault();
+                        const oldyVal = yVal;
+                        if(yVal > 0) {
+                            yVal -= 1;
+                        }
+                        const newId = yVal * this.cols + xVal;
+                        const inputText = crosswordContainer.querySelector(`input[data-index="${newId}"]`);
+                        if(!inputText || inputText.disabled) {
+                            yVal = oldyVal;
+                        }
+                        const validNewId = yVal * this.cols + xVal;
+                        this.setMovementWithDirection(validNewId, false);
+                        return;
+                    }
+                    else if(event.key == 'ArrowDown') {
+                        event.preventDefault();
+                        const oldyVal = yVal;
+                        if(yVal < (this.rows - 1)) {
+                            yVal += 1;
+                        }
+                        const newId = yVal * this.cols + xVal;
+                        const inputText = crosswordContainer.querySelector(`input[data-index="${newId}"]`);
+                        if(!inputText || inputText.disabled) {
+                            yVal = oldyVal;
+                        }
+                        const validNewId = yVal * this.cols + xVal;
+                        this.setMovementWithDirection(validNewId, false);
+                        return;
+                    }
+                    else if(event.key == 'Tab') {
+                        event.preventDefault();
+                        let nextIdx = (localMovement.curClueIdx + 1);
+                        let newClueIdx = nextIdx % this.clues.length;
+                        if(event.shiftKey) {
+                            newClueIdx = (localMovement.curClueIdx - 1);
+                            if(newClueIdx < 0) {
+                                newClueIdx = this.clues.length - 1;
+                            }
+                        }
+                        this.setMovementFromClue(newClueIdx);
+                        return;
                     }
                 });
                 input.addEventListener('click', (event) => {
