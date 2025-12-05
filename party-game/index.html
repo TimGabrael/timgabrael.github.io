@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Game</title>
+<link rel="stylesheet" href="styles.css">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<meta name="color-scheme" content="light only">
+</head>
+<body>
+
+
+
+<div id="connection-items">
+    <button id="host">Host</button>
+    <button id="host-and-join">Host and join</button>
+    <button id="connect">Connect</button>
+    <input type="text" id="id-input" />
+</div>
+
+<div id="main">
+</div> 
+
+<div class="overlay invisible" id="user_select_overlay">
+    <div id="name-field">
+        <div>Name:</div>
+        <input type="text" id="name_input" />
+    </div>
+
+    <div class="swatch" id="swatch"></div>
+    <input id="hue_input" type="range" min="0" max="360" value="200" step="1" />
+
+    <button id="submit">confirm</button>
+</div>
+
+<div class="overlay invisible" id="game_select_overlay">
+    <button id="random">Random</button>
+    <button id="random-grid">Random Grid</button>
+    <button id="hitster">Hitster</button>
+    <button id="hitster-rock">Hitster Rock</button>
+    <button id="hitster-christmas">Hitster Christmas</button>
+    <button id="hitster-guilty-pleasure">Hitster Guilty Pleasure</button>
+</div>
+
+
+
+<script>
+    const hue = document.getElementById('hue_input');
+    const swatch = document.getElementById('swatch');
+
+    hue.value = Math.random() * 360;
+    function setHueGradient(){
+        const stops=[];
+        for(let i=0;i<=360;i+=10){stops.push(`hsl(${i} 100% 50%) ${i/3.6}%`)}
+        hue.style.background=`linear-gradient(to right, ${stops.join(',')})`;
+    }
+    setHueGradient();
+
+    function updateHueInputPreview(){
+        const h=hue.value;
+        document.documentElement.style.setProperty('--h',h);
+        swatch.style.background=`hsl(${h} 100% 50%)`;
+    }
+    hue.addEventListener('input', updateHueInputPreview);
+    updateHueInputPreview();
+</script>
+<script src="data.js"></script>
+<script src="hitster.js"></script>
+<script src="range_data.js"></script>
+<script src="https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js"></script>
+<script src="index.js" defer></script>
+</body>
+</html>
