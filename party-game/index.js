@@ -2809,7 +2809,7 @@ function createGridGame() {
                 let scroll = false;
                 if(p_txt_info.width > width) {
                     scroll = true;
-                    scroll_offsets[i] += 0.2;
+                    scroll_offsets[i] += 0.2*DPR;
                     while(p_txt_wrap_width < scroll_offsets[i]) {
                         scroll_offsets[i] -= p_txt_wrap_width;
                     }
