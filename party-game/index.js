@@ -2888,17 +2888,33 @@ function createGridGame() {
     function updateFromGameState() {
         let show_x = false;
         let show_y = false;
+        let show_x_class = false;
+        let show_y_class = false;
         if(!clientCanAddPoint(local_client)) {
             removeTempInput();
             show_x = game_data.solved_x;
             show_y = game_data.solved_y;
+            show_x_class = game_data.solved_x;
+            show_y_class = game_data.solved_y;
         }
         else {
             show_x = true;
             show_y = true;
+            show_x_class = game_data.solved_x;
+            show_y_class = game_data.solved_y;
         }
         if(show_x) {
             input_x.disabled = true;
+            if(show_x_class) {
+                if(!input_x.classList.contains('solved')) {
+                    input_x.classList.add('solved');
+                }
+            }
+            else {
+                if(input_x.classList.contains('solved')) {
+                    input_x.classList.remove('solved');
+                }
+            }
             input_x.value = (game_data.x.length >= cur_team_index) ? game_data.x[cur_team_index] : "";
         }
         else {
@@ -2906,14 +2922,30 @@ function createGridGame() {
                 input_x.value = "";
             }
             input_x.disabled = false;
+            if(input_x.classList.contains('solved')) {
+                input_x.classList.remove('solved');
+            }
         }
         if(show_y) {
             input_y.disabled = true;
+            if(show_y_class) {
+                if(!input_y.classList.contains('solved')) {
+                    input_y.classList.add('solved');
+                }
+            }
+            else {
+                if(input_y.classList.contains('solved')) {
+                    input_y.classList.remove('solved');
+                }
+            }
             input_y.value = (game_data.y.length >= cur_team_index) ? game_data.y[cur_team_index] : "";
         }
         else {
             if(input_y.disabled) {
                 input_y.value = "";
+            }
+            if(input_y.classList.contains('solved')) {
+                input_y.classList.remove('solved');
             }
             input_y.disabled = false;
         }

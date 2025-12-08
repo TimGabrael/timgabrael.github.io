@@ -433,6 +433,9 @@
 }
 
 .canvas-wrap > input:disabled {
+    border: 1px solid gray;
+}
+.canvas-wrap > input:disabled.solved {
     border: 1px solid gold;
 }
 
