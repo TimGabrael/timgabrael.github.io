@@ -223,6 +223,7 @@
      display: flex;
      flex-direction: column;
      overflow-y: scroll;
+     overflow-x: scroll;
      justify-content: flex-start;
 
      user-select: none;
@@ -289,19 +290,32 @@
     background-color: transparent;
     width: 100%;
     height: 100%;
+    min-height: 20px;
 }
-.right-edit-card-space {
+.edit-card-space {
+    position: relative;
     display: flex;
-    justify-content: space-between;
     flex-direction: column;
     text-align: right;
+    height: 100%;
+    width: 20%;
+    justify-self: flex-end;
+}
+.edit-card-space > button {
+    position: absolute;
+    right: 0;
+    width: 100%;
+    height: fit-content;
 }
 .sort-limit-text {
-    position: relative;
-    font-size: var(--large-font-size);
+    flex-grow: 0;
+    position: absolute;
+    font-size: var(--font-size);
     color: white;
-    vertical-align: bottom;
+    vertical-align: top;
     align-self: flex-end;
+    bottom: 0;
+    width: fit-content;
 
     user-select: none;
     -moz-user-select: none;

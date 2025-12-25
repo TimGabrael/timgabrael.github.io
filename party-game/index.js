@@ -623,6 +623,7 @@ function addEditCard(left_txt, right_txt, card_info_text = "", input_text="", in
     let input = document.createElement('input');
     let left_sort_limit = document.createElement('div');
     let right_sort_limit = document.createElement('div');
+    let left_space = document.createElement('div');
     let right_space = document.createElement('div');
     let next_button = document.createElement('button');
     let team_text = document.createElement('div');
@@ -823,7 +824,8 @@ function addEditCard(left_txt, right_txt, card_info_text = "", input_text="", in
     card.classList.add('input-card');
     card_info.classList.add('input-card-info');
     input.classList.add('edit-card-input');
-    right_space.classList.add('right-edit-card-space');
+    right_space.classList.add('edit-card-space');
+    left_space.classList.add('edit-card-space');
     left_sort_limit.classList.add("sort-limit-text");
     right_sort_limit.classList.add("sort-limit-text");
     edit_area.classList.add('edit');
@@ -837,8 +839,9 @@ function addEditCard(left_txt, right_txt, card_info_text = "", input_text="", in
 
     right_space.appendChild(next_button);
     right_space.appendChild(right_sort_limit);
+    left_space.appendChild(left_sort_limit);
 
-    edit_area.appendChild(left_sort_limit);
+    edit_area.appendChild(left_space);
     edit_area.appendChild(card);
     edit_area.appendChild(right_space);
     main_area.appendChild(edit_area);
