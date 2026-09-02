@@ -126,7 +126,14 @@ loadSpiegelBtn.addEventListener('click', (event) => {
         }
         return response.json();
     }).then(data => {
-        crosswordGame = new Crossword("spiegel", data);
+        let dateArr = dateInput.value.split("-").map(Number)
+        if(dateArr[0] < 2026 || dateArr[1] < 1 || dateArr[2] < 6) {
+            // old crossword format
+            crosswordGame = new Crossword("spiegel", data);
+        }
+        else {
+            crosswordGame = new Crossword("spiegelNew", data);
+        }
     });
 });
 loadSueddeutscheBtn.addEventListener('click', (event) => {
@@ -264,6 +271,9 @@ class Crossword {
         if(origin == "spiegel") {
             this.initialize_from_spiegel(data);
         }
+        else if(origin == "spiegelNew") {
+            this.initialize_from_spiegel_new(data);
+        }
         else if(origin == "sueddeutsche") {
             this.initialize_from_sueddeutsche(data);
         }
@@ -299,6 +309,44 @@ class Crossword {
         for(const solve of data.crosswords.solved) {
             for(const elem of solve) {
                 this.solved.push(elem);
+            }
+        }
+    }
+    initialize_from_spiegel_new(data) {
+        data = data.data.riddle.payload;
+        this.difficulty = 0;
+        this.created = 0;
+        this.cols = data.width;
+        this.rows = data.height;
+        this.clues = [];
+        this.solved = [];
+        let id_counter = 0;
+        for(const elem of data.grid) {
+            if(elem.type === "question") {
+                // for some reason x,y are swapped
+                for(let i = 0; i < elem.connections.length; ++i) {
+                    let start = elem.connections[i][0].reverse();
+                    let end = elem.connections[i][elem.connections.length - 1].reverse();
+                    const myClue = {
+                        id: id_counter,
+                        col: start[0],
+                        row: start[1],
+                        start: start,
+                        end: end,
+                        text: elem.items[i][0].value,
+                    };
+                    this.clues.push(myClue);
+                    id_counter += 1;
+                }
+                this.solved.push('');
+            }
+            else if(elem.type === "answer") {
+                for(const item of elem.items) {
+                    if(item.type == "value") {
+                        this.solved.push(item.value);
+                        break;
+                    }
+                }
             }
         }
     }
