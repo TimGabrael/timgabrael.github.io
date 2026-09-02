@@ -325,8 +325,8 @@ class Crossword {
             if(elem.type === "question") {
                 // for some reason x,y are swapped
                 for(let i = 0; i < elem.connections.length; ++i) {
-                    let start = elem.connections[i][0].reverse();
-                    let end = elem.connections[i][elem.connections.length - 1].reverse();
+                    let start = elem.connections[i].list[0].reverse();
+                    let end = elem.connections[i].list[elem.connections.length - 1].reverse();
                     const myClue = {
                         id: id_counter,
                         col: start[0],
