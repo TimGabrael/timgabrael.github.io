@@ -127,7 +127,7 @@ loadSpiegelBtn.addEventListener('click', (event) => {
         return response.json();
     }).then(data => {
         let dateArr = dateInput.value.split("-").map(Number)
-        if(dateArr[0] < 2026 || dateArr[1] < 1 || dateArr[2] < 6) {
+        if(dateArr[0] < 2026 || (dateArr[0] == 2026 && dateArr[1] < 1) || (dateArr[0] == 2026 && dateArr[1] == 1 && dateArr[2] < 7)) {
             // old crossword format
             crosswordGame = new Crossword("spiegel", data);
         }
