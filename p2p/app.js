@@ -320,20 +320,21 @@ class Crossword {
         this.rows = data.height;
         this.clues = [];
         this.solved = [];
+        let solutionItems = [];
         let id_counter = 0;
         for(const elem of data.grid) {
             if(elem.type === "question") {
                 // for some reason x,y are swapped
                 for(let i = 0; i < elem.connections.length; ++i) {
                     let start = elem.connections[i].list[0].reverse();
-                    let end = elem.connections[i].list[elem.connections.length - 1].reverse();
+                    let end = elem.connections[i].list[elem.connections[i].list.length - 1].reverse();
                     const myClue = {
                         id: id_counter,
                         col: start[0],
                         row: start[1],
                         start: start,
                         end: end,
-                        text: elem.items[i][0].value,
+                        text: elem.items[i].value.replaceAll('+','\n'),
                     };
                     this.clues.push(myClue);
                     id_counter += 1;
@@ -341,14 +342,26 @@ class Crossword {
                 this.solved.push('');
             }
             else if(elem.type === "answer") {
+                let isSolutionElement = -1;
+                let squareValue = '';
                 for(const item of elem.items) {
                     if(item.type == "value") {
+                        squareValue = item.value;
                         this.solved.push(item.value);
-                        break;
                     }
+                    else if(item.type == "solutionNumber") {
+                        isSolutionElement = parseInt(item.value);
+                    }
+                }
+                if(isSolutionElement != -1) {
+                    solutionItems.push({
+                        index: isSolutionElement, 
+                        value: squareValue, 
+                    })
                 }
             }
         }
+        this.solution_word = solutionItems.sort().map(item => item.value).join('');
     }
     initialize_from_sueddeutsche(data) {
         this.difficulty = 0;
