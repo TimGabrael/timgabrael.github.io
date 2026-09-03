@@ -99,7 +99,9 @@ const connectHostBtn = document.getElementById('connectHostBtn');
 const chat = document.getElementById('chat');
 const loadSpiegelBtn = document.getElementById('loadSpiegelBtn');
 const loadSueddeutscheBtn = document.getElementById('loadSueddeutscheBtn');
-const loadNytBtn = document.getElementById('loadNytBtn');
+const loadNytBtnMini = document.getElementById('loadNytBtnMini');
+const loadNytBtnMidi = document.getElementById('loadNytBtnMidi');
+const loadNytBtnDaily = document.getElementById('loadNytBtnDaily');
 const dateInput = document.getElementById('dateInput');
 const crosswordContainer = document.getElementById('crosswordContainer');
 const crosswordHintsContainer = document.getElementById('crosswordHintsContainer');
@@ -236,8 +238,30 @@ loadSueddeutscheBtn.addEventListener('click', (event) => {
         crosswordGame = new Crossword("sueddeutsche", variable);
     });
 });
-loadNytBtn.addEventListener('click', (event) => {
-    fetch(`https://raw.githubusercontent.com/TimGabrael/fetch_ci/refs/heads/master/nyt/${dateInput.value}.json`)
+loadNytBtnMini.addEventListener('click', (event) => {
+    fetch(`https://raw.githubusercontent.com/TimGabrael/fetch_ci/refs/heads/master/nyt/mini/${dateInput.value}.json`)
+    .then(response => {
+        if(!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    }).then(data => {
+        crosswordGame = new Crossword("nyt", data.body[0]);
+    });
+});
+loadNytBtnMidi.addEventListener('click', (event) => {
+    fetch(`https://raw.githubusercontent.com/TimGabrael/fetch_ci/refs/heads/master/nyt/midi/${dateInput.value}.json`)
+    .then(response => {
+        if(!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    }).then(data => {
+        crosswordGame = new Crossword("nyt", data.body[0]);
+    });
+});
+loadNytBtnDaily.addEventListener('click', (event) => {
+    fetch(`https://raw.githubusercontent.com/TimGabrael/fetch_ci/refs/heads/master/nyt/daily/${dateInput.value}.json`)
     .then(response => {
         if(!response.ok) {
             throw new Error('Network response was not ok');
@@ -902,7 +926,9 @@ function broadcastFromHost(senderId, data) {
 function enableChat() {
     loadSpiegelBtn.hidden = false;
     loadSueddeutscheBtn.hidden = false;
-    loadNytBtn.hidden = false;
+    loadNytBtnMini.hidden = false;
+    loadNytBtnMidi.hidden = false;
+    loadNytBtnDaily.hidden = false;
     dateInput.hidden = false;
     hostControls.style.display = 'none';
     clientControls.style.display = 'none';
@@ -1086,7 +1112,9 @@ connectHostBtn.onclick = () => {
             messageInput.disabled = true;
             loadSpiegelBtn.hidden = true;
             loadSueddeutscheBtn.hidden = true;
-            loadNytBtn.hidden = true;
+            loadNytBtnMini.hidden = true;
+            loadNytBtnMidi.hidden = true;
+            loadNytBtnDaily.hidden = true;
             dateInput.hidden = true;
         });
     });
