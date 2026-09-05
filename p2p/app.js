@@ -321,6 +321,7 @@ class Crossword {
         for(const clue of data.crosswords.clues) {
             const myClue = {
                 id: id_counter,
+                label: id_counter + ":",
                 col: clue.col,
                 row: clue.row,
                 start: clue.s,
@@ -354,6 +355,7 @@ class Crossword {
                     let end = elem.connections[i].list[elem.connections[i].list.length - 1].reverse();
                     const myClue = {
                         id: id_counter,
+                        label: id_counter + ":",
                         col: start[0],
                         row: start[1],
                         start: start,
@@ -470,6 +472,7 @@ class Crossword {
 
                         const myClue = {
                             id: id_counter,
+                            label: id_counter + ":",
                             col: 0, // unused
                             row: 0, // unused
                             start: start,
@@ -516,6 +519,7 @@ class Crossword {
 
             const myClue = {
                 id: id_counter,
+                label: clue.label + " " + clue.direction + ":\n",
                 col: 0, // unused
                 row: 0, // unused
                 start: [sx, sy],
@@ -710,11 +714,11 @@ class Crossword {
         //}
         for(const clue of this.clues) {
             const text = document.createElement('div');
-            text.innerText = clue.id + ". " + clue.text;
+            text.innerText = clue.label + " " + clue.text;
             text.className = '';
             text.dataset.index = clue.id;
             text.addEventListener('click', (event) => {
-                this.setMovementFromClue(event.target.dataset.index);
+                this.setMovementFromClue(Number(event.target.dataset.index));
                 this.updateHighlightingFromMovement();
             });
             crosswordHintsContainer.appendChild(text);
