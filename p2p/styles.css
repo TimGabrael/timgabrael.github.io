@@ -78,7 +78,7 @@ button:disabled, input:disabled {
     align-content: center;
     align-items: center;
     justify-content: center;
-    font-size: 60px;
+    font-size: 40px;
     caret-color: transparent;
 }
 #crosswordContainer > input:focus {
@@ -91,6 +91,13 @@ button:disabled, input:disabled {
 #crosswordHintsContainer > div {
     border: 2px solid white;
     padding: 8px;
+}
+#crosswordCurrent {
+    position: absolute;
+    color: gold;
+    user-select: none;
+    font-size: 20px;
+    pointer-events: none;
 }
 .highlight-text {
     color: gold;

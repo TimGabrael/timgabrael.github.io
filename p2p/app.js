@@ -105,6 +105,7 @@ const loadNytBtnDaily = document.getElementById('loadNytBtnDaily');
 const dateInput = document.getElementById('dateInput');
 const crosswordContainer = document.getElementById('crosswordContainer');
 const crosswordHintsContainer = document.getElementById('crosswordHintsContainer');
+const crosswordCurrent = document.getElementById('crosswordCurrent');
 const hostControls = document.getElementById('hostControls');
 const clientControls = document.getElementById('clientControls');
 
@@ -282,6 +283,8 @@ class Crossword {
     constructor(origin, data) {
         crosswordContainer.innerHTML = '';
         crosswordHintsContainer.innerHTML = '';
+        crosswordCurrent.textContent = '';
+        crosswordCurrent.hidden = true;
         localMovement.curClueIdx = -1;
         localMovement.stepIdx = -1;
         
@@ -534,7 +537,7 @@ class Crossword {
     }
     generate() {
         crosswordContainer.innerHTML = '';
-        const squareSize = 80;
+        const squareSize = 60;
         crosswordContainer.style.width = `${this.cols * squareSize}`;
         crosswordContainer.style.height = `${this.rows * squareSize}`;
         crosswordContainer.style.display = 'grid';
@@ -811,11 +814,14 @@ class Crossword {
         for(const child of crosswordHintsContainer.children) {
             child.className = '';
         }
+        crosswordCurrent.hidden = true;
         for(const clue of this.clues) {
             if(localMovement.curClueIdx == clue.id) {
                 const clueText = crosswordHintsContainer.querySelector(`div[data-index="${clue.id}"]`);
                 if(clueText) {
                     clueText.classList.add('highlight-text');
+                    crosswordCurrent.hidden = false;
+                    crosswordCurrent.textContent = clueText.textContent;
                 }
 
                 const deltaX = clue.end[0] - clue.start[0];
@@ -826,6 +832,14 @@ class Crossword {
                 for(let i = 0; i < steps; i++) {
                     let curId = (clue.start[1] + dy * i) * this.cols + (clue.start[0] + dx * i);
                     const inputText = crosswordContainer.querySelector(`input[data-index="${curId}"]`);
+                    if(i == 0) {
+                        const rect = inputText.getBoundingClientRect();
+                        const parentRect = crosswordContainer.getBoundingClientRect();
+                        const curRect = crosswordCurrent.getBoundingClientRect();
+                        crosswordCurrent.style.position = 'absolute';
+                        crosswordCurrent.style.left = `${rect.left - parentRect.left}px`; 
+                        crosswordCurrent.style.top = `${rect.top - parentRect.top + 20 - curRect.height}px`;
+                    }
                     inputText.classList.add('green-border');
                 }
                 break;
