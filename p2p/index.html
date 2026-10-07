@@ -6,9 +6,9 @@
         <link rel="stylesheet" href="styles.css" />
     </head>
     <body>
-        <h2>Playground</h2>
+        <h2>Crosswords</h2>
 
-        <label>
+        <label hidden>
             Your name:
             <input type="text" id="username" />
         </label>
@@ -33,10 +33,10 @@
 
         <input id="dateInput" type="text" hidden></button>
         <div id="crosswordGame">
+            <div id="crosswordCurrent"></div>
             <div id="crosswordContainer"></div>
-            <div id="crosswordHintsContainer"></div>
-            <div id="crosswordCurrent" hidden></div>
         </div>
+        <div id="crosswordHintsContainer"></div>
 
         <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
         <script src="app.js"></script>

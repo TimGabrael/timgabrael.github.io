@@ -73,6 +73,9 @@ button:disabled, input:disabled {
     padding-top: 30px;
     position: absolute;
     justify-content: center;
+    justify-self: center;
+    position: relative;
+    flex-flow: column;
 }
 #crosswordContainer > input {
     align-content: center;
@@ -87,17 +90,23 @@ button:disabled, input:disabled {
 #crosswordHintsContainer {
     color: gray;
     padding: 8px;
+    position: relative;
+    justify-self: center;
 }
 #crosswordHintsContainer > div {
     border: 2px solid white;
     padding: 8px;
 }
 #crosswordCurrent {
-    position: absolute;
+    max-height: 100px;
+    min-height: 100px;
+    width: 100%;
     color: gold;
     user-select: none;
     font-size: 20px;
     pointer-events: none;
+    bottom: 0px;
+    left: 0px;
 }
 .highlight-text {
     color: gold;
